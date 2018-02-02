@@ -1,11 +1,11 @@
 {
   "name": "flow-build",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "打包工具",
   "main": "src/middleware.js",
   "bin": {
     "flow": "bin/flow",
-    "flow-start": "bin/flow-list",
+    "flow-start": "bin/flow-start",
     "flow-build": "bin/flow-build"
   },
   "scripts": {
