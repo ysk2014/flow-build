@@ -12,7 +12,7 @@ const chalk = require("chalk");
 const checkRequiredFiles = require("./utils/checkRequiredFiles");
 const validateSchema = require("./schema/v");
 
-// const pkg = require(path.join(process.cwd(), './package.json'));
+const pkg = require(path.join(process.cwd(), './package.json'));
 
 class Compontent extends Tapable {
     constructor(options) {
@@ -26,6 +26,8 @@ class Compontent extends Tapable {
         this.initBabelOptions(this.options);
 
         this.checkFiles();
+
+        this.checkNodeModules();
     }
 
     /**
