@@ -27,7 +27,7 @@ class Compontent extends Tapable {
 
         this.checkFiles();
 
-        this.checkNodeModules();
+        this.checkNodeModules(this.options);
     }
 
     /**
