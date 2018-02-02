@@ -1,0 +1,251 @@
+{
+    "type": "object",
+    "additionalProperties": false,
+    "definitions": {
+        "common.nonEmptyArrayOfUniqueStringValues": {
+            "items": {
+                "description": "A non-empty string",
+                "minLength": 1,
+                "type": "string"
+            },
+            "minItems": 1,
+            "type": "array",
+            "uniqueItems": true
+        },
+        "entry": {
+            "oneOf": [
+                {
+                    "minProperties": 1,
+                    "additionalProperties": {
+                        "description": "An entry point with name",
+                        "oneOf": [
+                            {
+                                "description": "The string is resolved to a module which is loaded upon startup.",
+                                "minLength": 1,
+                                "type": "string"
+                            },
+                            {
+                                "description": "All modules are loaded upon startup. The last one is exported.",
+                                "anyOf": [
+                                    {
+                                        "$ref": "#/definitions/common.nonEmptyArrayOfUniqueStringValues"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "description": "Multiple entry bundles are created. The key is the chunk name. The value can be a string or an array.",
+                    "type": "object"
+                },
+                {
+                    "description": "An entry point without name. All modules are loaded upon startup. The last one is exported.",
+                    "anyOf": [
+                        {
+                            "$ref": "#/definitions/common.nonEmptyArrayOfUniqueStringValues"
+                        }
+                    ]
+                }
+            ]
+        }
+    },
+    "properties":{
+        "entry": {
+            "description": "The entry point(s) of the compilation.",
+            "anyOf": [
+                {
+                    "$ref": "#/definitions/entry"
+                }
+            ]
+        },
+        "srcDir": {
+            "description": "项目源码目录",
+            "type": "string",
+            "default": "./src"
+        },
+        "dev": {
+            "description": "开发环境配置",
+            "type": "object",
+            "properties": {
+                "host": {
+                    "description": "开发环境host地址，默认为localhost",
+                    "type": "string",
+                    "default": "localhost"
+                },
+                "port": {
+                    "description": "开发环境的端口号，默认为3000",
+                    "type": "number",
+                    "default": 3001
+                },
+                "publicPath": {
+                    "description": "开发环境的静态资源cdn地址，默认为/",
+                    "type": "string",
+                    "default": "/"
+                },
+                "proxyTable": {
+                    "description": "开发环境的代理",
+                    "type": "object"
+                },
+                "errorOverlay": {
+                    "description": "是否开启webpack-dev-server的overlay配置，默认为{errors:true,warings: false}",
+                    "type": "boolean",
+                    "default": true
+                },
+                "poll": {
+                    "description": "是否开启webpack-dev-server的poll配置，默认为false",
+                    "type": "boolean",
+                    "default": false
+                },
+                "devtool": {
+                    "description": "webpack的devtool配置",
+                    "anyOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "enum": [false]
+                        }
+                    ],
+                    "default": "eval-source-map"
+                },
+                "cssSourceMap": {
+                    "description": "是否生成css的sourceMap配置，默认为false",
+                    "type": "boolean",
+                    "default": false
+                },
+                "plugins": {
+                    "description": "webpack的plugins配置",
+                    "anyOf": [
+                        {
+                            "type": "array"
+                        },
+                        {
+                            "enum": [null]
+                        }
+                    ]
+                }
+            }
+        },
+        "build": {
+            "description": "打包环境配置",
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "outputPath": {
+                    "description": "打包环境的输出目录地址，默认为./dist",
+                    "type": "string",
+                    "default": "./dist"
+                },
+                "assetsSubDirectory": {
+                    "description": "打包后的静态文件子目录",
+                    "type": "string"
+                },
+                "publicPath": {
+                    "description": "打包的静态资源cdn地址，默认为/",
+                    "type": "string",
+                    "default": "/"
+                },
+                "devtool": {
+                    "description": "webpack的devtool配置",
+                    "anyOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "enum": [false]
+                        }
+                    ],
+                    "default": "#source-map"
+                },
+                "cssSourceMap": {
+                    "description": "是否生成css的sourceMap配置，默认为true",
+                    "type": "boolean",
+                    "default": true
+                },
+                "plugins": {
+                    "description": "webpack的plugins配置",
+                    "anyOf": [
+                        {
+                            "type": "array"
+                        },
+                        {
+                            "enum": [null]
+                        }
+                    ]
+                }
+            }
+        },
+        "js": {
+            "description": "js配置",
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "babel": {
+                    "description": "babel配置",
+                    "type": "object",
+                    "default": {
+                        "presets": [
+                            ["env", {
+                                "modules": false
+                            }],
+                            "stage-2"
+                        ]
+                    }
+                }
+            }
+        },
+        "css": {
+            "description": "css配置",
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "engine": {
+                    "description": "css引擎",
+                    "anyOf": [
+                        {
+                            "type": "array"
+                        },
+                        {
+                            "enum": ["css","less","sass","postcss","stylus"]
+                        }
+                    ],
+                    "default": "css"
+                }
+            }
+        },
+        "image": {
+            "description": "image配置",
+            "type": "object",
+            "properties": {
+                "limit": {
+                    "description": "图片转化base64的条件配置",
+                    "type": "number",
+                    "default": 1000
+                }
+            }
+        },
+        "html": {
+            "description": "html配置",
+            "type": "object",
+            "properties": {
+                "filename": {
+                    "description": "html-webpack-plugin的filename配置",
+                    "type": "string"
+                },
+                "template": {
+                    "description": "html-webpack-plugin的template配置",
+                    "type": "string"
+                },
+                "data": {
+                    "description": "html模板数据映射",
+                    "type": "object"
+                }
+            }
+        },
+        "spa": {
+            "description": "项目应用类型，vue/react/multiple/none",
+            "type": "string",
+            "enum": ["vue", "react", "multiple","none"],
+            "default": "none"
+        }
+    }
+}

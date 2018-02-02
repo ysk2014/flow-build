@@ -1,0 +1,10 @@
+#!/usr/bin/env node
+
+'use strict';
+
+require('commander')
+  .version(require('../package').version)
+  .usage('<command> [options]')
+  .command('start', 'start the application in development mode')
+  .command('build', 'compiles the application for production deployment')
+  .parse(process.argv)

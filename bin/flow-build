@@ -1,0 +1,35 @@
+#!/usr/bin/env node
+
+'use strict';
+
+const path = require("path");
+const program = require('commander');
+const checkRequiredFiles = require("../src/utils/checkRequiredFiles");
+const Builder = require("../src/Builder");
+
+
+program
+  .option('-c, --config-file', 'Path to flow.js config file (default: flow.config.js)')
+  .parse(process.argv);
+
+/**
+ * 获取配置文件路径，默认为当前项目下的flow.config.js
+ */
+if (program['config-file']) {
+    var ConfigFilePath = path.join(process.cwd(), program['config-file']);
+} else {
+    var ConfigFilePath = path.join(process.cwd(), './flow.config.js');
+}
+
+/**
+ * 检测配置文件是否存在
+ */
+if (!checkRequiredFiles([ConfigFilePath])) {
+    process.exit(1)
+}
+
+
+let config = require(ConfigFilePath);
+
+let complier = new Builder(config);
+complier.run();
