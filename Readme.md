@@ -2,7 +2,7 @@
 
 ## 安装
 
-`npm install --save-dev @cluas/flow-build`
+`npm install --save-dev flow-build`
 
 ## 开发
 

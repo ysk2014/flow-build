@@ -1,6 +1,6 @@
 {
   "name": "flow-build",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "打包工具",
   "main": "src/middleware.js",
   "bin": {
@@ -11,7 +11,10 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "repository": "https://github.com/ysk2014/flow-build",
+  "repository": {
+    "type":"git",
+    "url": "git+https://github.com/ysk2014/flow-build.git"
+  },
   "author": {
     "name": "claus",
     "url": "https://github.com/ysk2014"
