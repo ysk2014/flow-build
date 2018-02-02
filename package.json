@@ -12,7 +12,10 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": "https://github.com/ysk2014/flow-build",
-  "author": "",
+  "author": {
+    "name": "claus",
+    "url": "https://github.com/ysk2014"
+  },
   "license": "ISC",
   "dependencies": {
     "ajv": "^6.1.1",
