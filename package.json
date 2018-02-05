@@ -1,12 +1,10 @@
 {
   "name": "flow-build",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "打包工具",
   "main": "src/middleware.js",
   "bin": {
-    "flow": "bin/flow",
-    "flow-start": "bin/flow-start",
-    "flow-build": "bin/flow-build"
+    "flow": "bin/flow"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
