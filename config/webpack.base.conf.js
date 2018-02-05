@@ -3,7 +3,7 @@ const webpack = require("webpack");
 const InterpolateHtmlPlugin = require('../src/utils/InterpolateHtmlPlugin');
 
 module.exports = function webpackBaseConfig (dev) {
-    const nodeModulesDir = join(process.cwd(), '..', 'node_modules');
+    const nodeModulesDir = join(process.cwd(), './node_modules');
 
     let env = dev ? this.options.dev : this.options.build
 
@@ -78,6 +78,7 @@ module.exports = function webpackBaseConfig (dev) {
             "@": resolve(this.options.srcDir),
             "vue$": "vue/dist/vue.esm.js"
         }
+        
     } else if (this.spa == "react") {
         config.resolve.extensions.push(".jsx",".web.js",".web.jsx");
     }

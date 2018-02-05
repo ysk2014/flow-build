@@ -60,6 +60,10 @@ class Compontent extends Tapable {
             needModules.push("vue-style-loader","vue-loader","vue-template-compiler");
         }
 
+        if (options.build.analyze) {
+            needModules.push("webpack-bundle-analyzer");
+        }
+
         const NowModules = Object.keys(pkg["devDependencies"]);
         needModules.forEach( n=> {
             if (NowModules.indexOf(n)<0) {

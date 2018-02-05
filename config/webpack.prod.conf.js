@@ -28,31 +28,13 @@ module.exports = function createProdConfig() {
                 root: path.resolve(process.cwd())
             }),
 
-            new webpack.HashedModuleIdsPlugin(),
-            // enable scope hoisting
-            new webpack.optimize.ModuleConcatenationPlugin(),
-            // split vendor js into its own file
-            new webpack.optimize.CommonsChunkPlugin({
-                name: 'vendor',
-                minChunks: function (module) {
-                    // any required modules inside node_modules are extracted to vendor
-                    return (
-                        module.resource &&
-                        /\.js$/.test(module.resource) &&
-                        module.resource.indexOf(
-                            path.join(__dirname, '../node_modules')
-                        ) === 0
-                    )
-                }
-            }),
-
             new webpack.optimize.UglifyJsPlugin({
                 compress: {
                   warnings: false
                 },
                 sourceMap: true,
                 parallel: true
-            }), 
+            }),
 
             new ExtractTextPlugin({
                 filename: this.assetsPath('css/[name].[contenthash].css'),
@@ -63,11 +45,6 @@ module.exports = function createProdConfig() {
                 cssProcessorOptions: env.cssSourceMap
                     ? { safe: true, map: { inline: false } }
                     : { safe: true }
-            }),
-
-            new webpack.optimize.CommonsChunkPlugin({
-                name: 'manifest',
-                minChunks: Infinity
             }),
 
             new HtmlWebpackPlugin({
@@ -81,6 +58,30 @@ module.exports = function createProdConfig() {
                 },
                 chunksSortMode: 'dependency'
             }),
+
+            new webpack.HashedModuleIdsPlugin(),
+            // enable scope hoisting
+            new webpack.optimize.ModuleConcatenationPlugin(),
+            // split vendor js into its own file
+            new webpack.optimize.CommonsChunkPlugin({
+                name: 'vendor',
+                minChunks: function (module) {
+                    // any required modules inside node_modules are extracted to vendor
+                    return (
+                        module.resource &&
+                        /\.js$/.test(module.resource) &&
+                        module.resource.indexOf(
+                            path.join(process.cwd(), './node_modules')
+                        ) === 0
+                    )
+                }
+            }),
+
+            new webpack.optimize.CommonsChunkPlugin({
+                name: 'manifest',
+                minChunks: Infinity
+            }),
+            
         ]
     });
 
@@ -95,7 +96,7 @@ module.exports = function createProdConfig() {
         )
     }
 
-    if (process.env.npm_config_report) {
+    if (env.analyze) {
         const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
         config.plugins.push(new BundleAnalyzerPlugin());
     }
