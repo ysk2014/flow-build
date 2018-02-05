@@ -84,5 +84,21 @@ module.exports = function createProdConfig() {
         ]
     });
 
+    if (this.spa=="vue") {
+        config.plugins.push(
+            new webpack.optimize.CommonsChunkPlugin({
+                name: 'app',
+                async: 'vendor-async',
+                children: true,
+                minChunks: 3
+            })
+        )
+    }
+
+    if (process.env.npm_config_report) {
+        const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+        config.plugins.push(new BundleAnalyzerPlugin());
+    }
+
     return config;
 }
