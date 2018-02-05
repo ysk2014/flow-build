@@ -1,6 +1,6 @@
 {
   "name": "flow-build",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "打包工具",
   "main": "src/middleware.js",
   "bin": {
@@ -19,7 +19,8 @@
   },
   "license": "ISC",
   "dependencies": {
-    "ajv": "^6.1.1",
+    "ajv": "^5.1.5",
+    "ajv-keywords": "^2.0.0",
     "autoprefixer": "^7.2.5",
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.2",
@@ -46,19 +47,5 @@
     "webpack-dev-server": "^2.11.1",
     "webpack-merge": "^4.1.1",
     "yargs": "^11.0.0"
-  },
-  "devDependencies": {
-    "connect-history-api-fallback": "^1.5.0",
-    "express": "^4.16.2",
-    "http-proxy-middleware": "^0.17.4",
-    "koa": "^2.4.1",
-    "less-loader": "^4.0.5",
-    "style-loader": "^0.20.1",
-    "vue": "^2.5.13",
-    "vue-loader": "^13.7.0",
-    "vue-style-loader": "^3.1.1",
-    "vue-template-compiler": "^2.5.13",
-    "webpack-dev-middleware": "^2.0.4",
-    "webpack-hot-middleware": "^2.21.0"
   }
 }
