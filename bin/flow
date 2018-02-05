@@ -2,9 +2,55 @@
 
 'use strict';
 
-require('commander')
-  .version(require('../package').version)
-  .usage('<command> [options]')
-  .command('start', 'start the application in development mode')
-  .command('build', 'compiles the application for production deployment')
-  .parse(process.argv)
+const path = require("path");
+const checkRequiredFiles = require("../src/utils/checkRequiredFiles");
+const DevServer = require("../src/DevServer");
+
+let env, complier;
+
+let argv = require('yargs')
+    // .version(require('../package').version)
+    .usage('Usage: $0 <command> [options]')
+    .command('start', 'start the application in development mode', () => {
+        env = "start";
+    })
+    .command('build', 'compiles the application for production deployment', ()=> {
+        env = "build";
+    })
+    .option("c", {
+        alias : 'config-file',
+        default: './flow.config.js',
+        describe: 'Path to flow.js config file (default: flow.config.js)',
+        type: 'string'
+    })
+    .help("help")
+    .alias("help", "h")
+    .version()
+    .alias("version", "v")
+    .default('v', require('../package').version)
+    .argv;
+
+/**
+ * 获取配置文件路径，默认为当前项目下的flow.config.js
+ */
+var ConfigFilePath = path.join(process.cwd(), argv['config-file']);
+
+/**
+ * 检测配置文件是否存在
+ */
+if (!checkRequiredFiles([ConfigFilePath])) {
+    process.exit(1)
+}
+
+
+let config = require(ConfigFilePath);
+
+if (env=="start") {
+    const DevServer = require("../src/DevServer");
+    complier = new DevServer(config);
+} else if (env == "build") {
+    const Builder = require("../src/Builder");
+    complier = new Builder(config);
+}
+
+complier.run();

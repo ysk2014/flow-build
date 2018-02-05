@@ -23,11 +23,21 @@ const flowConfig = require("./flow.config");
 
 const app = express();
 
-let {devMiddle, hotMiddleware} = new Flow(flowConfig);
+let { compiler } = new Flow(flowConfig);
+
+const devMiddleware = require('webpack-dev-middleware')(compiler, {
+  publicPath: config.dev.publicPath,
+  quiet: true
+})
+
+const hotMiddleware = require('webpack-hot-middleware')(compiler, {
+  log: false,
+  heartbeat: 2000
+})
+
+app.use(hotMiddleware)
 
 app.use(devMiddleware);
-
-app.use(hotMiddleware);
 
 app.listen(flowConfig.dev.port);
 

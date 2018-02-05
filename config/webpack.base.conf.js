@@ -29,12 +29,12 @@ module.exports = function webpackBaseConfig () {
             rules: [
                 {
                     test:  /\.(js|jsx)$/,
-                    loader: 'babel-loader',
+                    loader: require.resolve('babel-loader'),
                     options: Object.assign({}, this.babelOptions)
                 },
                 {
                     test: /\.(png|jpe?g|gif|svg)$/,
-                    loader: 'url-loader',
+                    loader: require.resolve('url-loader'),
                     options: {
                         limit: this.options.image.limit,
                         name: this.assetsPath('img/[name].[hash:7].[ext]')
@@ -42,7 +42,7 @@ module.exports = function webpackBaseConfig () {
                 },
                 {
                     test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
-                    loader: 'url-loader',
+                    loader: require.resolve('url-loader'),
                     options: {
                         limit: 1000, // 10 KO
                         name: this.assetsPath('fonts/[name].[hash:7].[ext]')
@@ -50,7 +50,7 @@ module.exports = function webpackBaseConfig () {
                 },
                 {
                     test: /\.(webm|mp4)$/,
-                    loader: 'file-loader',
+                    loader: require.resolve('file-loader'),
                     options: {
                         name: this.assetsPath('videos/[name].[hash:7].[ext]')
                     }
@@ -67,7 +67,7 @@ module.exports = function webpackBaseConfig () {
     if (this.spa == "vue") {
         config.module.rules.push({
             test: /\.vue$/,
-            loader: 'vue-loader',
+            loader: require.resolve('vue-loader'),
             options: this.vueLoader({
                 sourceMapEnabled: env.cssSourceMap,
                 isProduction: !dev

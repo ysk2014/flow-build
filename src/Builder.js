@@ -55,7 +55,7 @@ class Builder extends Component {
             }
             if (messages.warnings.length) {
                 console.log(chalk.yellow('> Compiled with warnings.\n'));
-                console.log(warnings.join('\n\n'));
+                console.log(messages.warnings.join('\n\n'));
             } else {
                 process.stdout.write('\n\n'+stats.toString({
                     colors: true,

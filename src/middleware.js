@@ -2,9 +2,7 @@
  * express的中间件
  * @returns
  * {
- *      devMiddleware: webpack-dev-middleware的实例
- *      hotMiddleware: webpack-hot-middleware的实例
- *      waitUntilValid： 对webpack-dev-middleware的waitUntilValid的封装
+ *      compiler： 对webpack实例的封装
  * }
  */
 
@@ -16,10 +14,7 @@ process.env.NODE_ENV = 'development';
 
 const chalk = require('chalk');
 const webpack = require('webpack');
-const webpackDevMiddleware = require("webpack-dev-middleware");
-const webpackHotMiddleware = require("webpack-hot-middleware");
 const Compontent = require("./Compontent");
-const createDevServerConfig = require('../config/webpackDevServer.conf');
 const createDevConfig = require('../config/webpack.dev.conf');
 const formatWebpackMessages = require('./utils/formatWebpackMessages');
 
@@ -27,16 +22,7 @@ class MiddleWare extends Compontent {
     constructor(options) {
         super(options);
 
-        let compiler = this._createCompiler();
-        this.devMiddleware = webpackDevMiddleware(compiler, {
-            publicPath: this.options.dev.publicPath,
-            quiet: true
-        });
-        this.hotMiddleware = webpackHotMiddleware(compiler, {
-            log: false,
-            heartbeat: 2000
-        });
-
+        this.compiler = this._createCompiler();
     }
 
     _createCompiler() {
@@ -115,14 +101,6 @@ class MiddleWare extends Compontent {
         return compiler;
     }
 
-    /**
-     * 对webpack-dev-middleware的waitUntilValid的封装
-     * @param {Function} callback 
-     */
-    waitUntilValid(callback) {
-        console.log(this);
-        if (this.devMiddleware) this.devMiddleware.waitUntilValid(callback);
-    }
 }
 
 module.exports = MiddleWare;

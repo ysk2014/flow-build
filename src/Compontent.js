@@ -84,7 +84,34 @@ class Compontent extends Tapable {
      * @param {Object} js 
      */
     initBabelOptions({ js }) {
-        this.babelOptions = js.babel;
+        this.babelOptions = {
+            babelrc: false,
+            compact: true,
+            cacheDirectory: process.env.NODE_ENV == "production",
+            highlightCode: true,
+        };
+
+        Object.keys(js.babel).forEach(key => {
+            if (Array.isArray(js.babel[key]) && js.babel[key].length>0) {
+                if (key=="presets") {
+                    var k = "preset";
+                } else if (key == "plugins") {
+                    var k = "plugin";
+                } else {
+                    var k = key.substr(0, key.length-2);
+                }
+
+                this.babelOptions[key] = js.babel[key].map(val => {
+                    if (Array.isArray(val)) {
+                        return [require.resolve(`babel-${k}-${val[0]}`), val[1]];
+                    } else {
+                        return require.resolve(`babel-${k}-${val}`);
+                    }
+                });
+            } else {
+                this.babelOptions[key] = js.babel[key];
+            }
+        });
     }
 
     /**
@@ -187,10 +214,15 @@ class Compontent extends Tapable {
      */
     vueLoader({ sourceMapEnabled, isProduction}) {
         return {
-            loaders: this.cssLoaders({
+            loaders: Object.assign({}, {
+                "js": {
+                    loader: 'babel-loader',
+                    options: Object.assign({}, this.babelOptions)
+                },
+            }, this.cssLoaders({
                 sourceMap: sourceMapEnabled,
                 extract: isProduction
-            }),
+            })),
             cssSourceMap: sourceMapEnabled,
             transformToRequire: {
                 video: 'src',
