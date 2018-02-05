@@ -2,9 +2,7 @@ let {join, resolve} = require("path");
 const webpack = require("webpack");
 const InterpolateHtmlPlugin = require('../src/utils/InterpolateHtmlPlugin');
 
-let dev = process.env.NODE_ENV != "production";
-
-module.exports = function webpackBaseConfig () {
+module.exports = function webpackBaseConfig (dev) {
     const nodeModulesDir = join(process.cwd(), '..', 'node_modules');
 
     let env = dev ? this.options.dev : this.options.build
@@ -26,15 +24,17 @@ module.exports = function webpackBaseConfig () {
             extensions: [".js", ".json"]
         },
         module: {
+            noParse: /es6-promise\.js$/, // Avoid webpack shimming process
             rules: [
                 {
                     test:  /\.(js|jsx)$/,
                     loader: require.resolve('babel-loader'),
+                    exclude: /node_modules/,
                     options: Object.assign({}, this.babelOptions)
                 },
                 {
                     test: /\.(png|jpe?g|gif|svg)$/,
-                    loader: require.resolve('url-loader'),
+                    loader: 'url-loader',
                     options: {
                         limit: this.options.image.limit,
                         name: this.assetsPath('img/[name].[hash:7].[ext]')
@@ -42,7 +42,7 @@ module.exports = function webpackBaseConfig () {
                 },
                 {
                     test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
-                    loader: require.resolve('url-loader'),
+                    loader: 'url-loader',
                     options: {
                         limit: 1000, // 10 KO
                         name: this.assetsPath('fonts/[name].[hash:7].[ext]')
@@ -50,7 +50,7 @@ module.exports = function webpackBaseConfig () {
                 },
                 {
                     test: /\.(webm|mp4)$/,
-                    loader: require.resolve('file-loader'),
+                    loader: 'file-loader',
                     options: {
                         name: this.assetsPath('videos/[name].[hash:7].[ext]')
                     }
@@ -67,7 +67,7 @@ module.exports = function webpackBaseConfig () {
     if (this.spa == "vue") {
         config.module.rules.push({
             test: /\.vue$/,
-            loader: require.resolve('vue-loader'),
+            loader: 'vue-loader',
             options: this.vueLoader({
                 sourceMapEnabled: env.cssSourceMap,
                 isProduction: !dev

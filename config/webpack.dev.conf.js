@@ -9,7 +9,7 @@ const createDevServerConfig = require('./webpackDevServer.conf');
 
 
 module.exports = function webpackDevConfig () {
-    let base = createBase.call(this);
+    let base = createBase.call(this, true);
     let env = this.options.dev;
 
     let devServer = createDevServerConfig.call(this);

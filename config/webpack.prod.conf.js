@@ -11,7 +11,7 @@ const OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin');
 let createBase = require("./webpack.base.conf");
 
 module.exports = function createProdConfig() {
-    let base = createBase.call(this);
+    let base = createBase.call(this, false);
     let env = this.options.build;
 
     let config = merge(base, {

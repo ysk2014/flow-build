@@ -3,7 +3,7 @@
  */
 'use strict';
 
-var fs = require('fs-extra');
+var fs = require('fs');
 var path = require('path');
 var chalk = require('chalk');
 

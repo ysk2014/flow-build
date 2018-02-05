@@ -16,7 +16,6 @@ process.on('unhandledRejection', err => {
 const path = require("path");
 const chalk = require('chalk');
 const webpack = require('webpack');
-const fs = require("fs-extra");
 
 const Component = require("./Compontent");
 const createProdConfig = require('../config/webpack.prod.conf');

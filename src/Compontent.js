@@ -12,7 +12,7 @@ const chalk = require("chalk");
 const checkRequiredFiles = require("./utils/checkRequiredFiles");
 const validateSchema = require("./schema/v");
 
-const pkg = require(path.join(process.cwd(), './package.json'));
+// const pkg = require(path.join(process.cwd(), './package.json'));
 
 class Compontent extends Tapable {
     constructor(options) {
@@ -26,8 +26,6 @@ class Compontent extends Tapable {
         this.initBabelOptions(this.options);
 
         this.checkFiles();
-
-        this.checkNodeModules(this.options);
     }
 
     /**
@@ -128,6 +126,7 @@ class Compontent extends Tapable {
                 use: loader
             });
         }
+
         return output;
     }
 
@@ -213,16 +212,18 @@ class Compontent extends Tapable {
      * @param {Boolean} param
      */
     vueLoader({ sourceMapEnabled, isProduction}) {
-        return {
+        let cssLoaders = this.cssLoaders({
+            sourceMap: sourceMapEnabled,
+            extract: isProduction
+        });
+
+        let obj = {
             loaders: Object.assign({}, {
                 "js": {
                     loader: 'babel-loader',
                     options: Object.assign({}, this.babelOptions)
                 },
-            }, this.cssLoaders({
-                sourceMap: sourceMapEnabled,
-                extract: isProduction
-            })),
+            }, cssLoaders),
             cssSourceMap: sourceMapEnabled,
             transformToRequire: {
                 video: 'src',
@@ -231,6 +232,7 @@ class Compontent extends Tapable {
                 image: 'xlink:href'
             }
         }
+        return obj;
     }
 }
 
