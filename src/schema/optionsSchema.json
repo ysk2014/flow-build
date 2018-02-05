@@ -161,6 +161,11 @@
                     "type": "boolean",
                     "default": true
                 },
+                "analyze": {
+                    "description": "分析并可视化构建后的打包文件",
+                    "type":"boolean",
+                    "default": false
+                },
                 "plugins": {
                     "description": "webpack的plugins配置",
                     "anyOf": [
@@ -237,6 +242,21 @@
                 },
                 "data": {
                     "description": "html模板数据映射",
+                    "type": "object"
+                }
+            }
+        },
+        "white": {
+            "description": "白名单配置",
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "patterns": {
+                    "description": "白名单",
+                    "type": "array"
+                },
+                "rules": {
+                    "description": "白名单规则",
                     "type": "object"
                 }
             }

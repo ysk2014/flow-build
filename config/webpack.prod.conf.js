@@ -85,6 +85,11 @@ module.exports = function createProdConfig() {
         ]
     });
 
+    if (this.options.white && this.options.white.patterns && this.options.white.rules) {
+        let CopyWebpackPlugin = require("copy-webpack-plugin");
+        config.plugins.plugins(new CopyWebpackPlugin(this.options.white.patterns, this.options.white.rules));
+    }
+
     if (this.spa=="vue") {
         config.plugins.push(
             new webpack.optimize.CommonsChunkPlugin({
