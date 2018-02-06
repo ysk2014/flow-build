@@ -1,5 +1,6 @@
 let {join, resolve} = require("path");
 const webpack = require("webpack");
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 const InterpolateHtmlPlugin = require('../src/utils/InterpolateHtmlPlugin');
 
 module.exports = function webpackBaseConfig (dev) {
@@ -64,7 +65,7 @@ module.exports = function webpackBaseConfig (dev) {
         ]
     }
 
-    if (this.spa == "vue") {
+    if (this.mode == "vue") {
         config.module.rules.push({
             test: /\.vue$/,
             loader: 'vue-loader',
@@ -79,11 +80,55 @@ module.exports = function webpackBaseConfig (dev) {
             "vue$": "vue/dist/vue.esm.js"
         }
         
-    } else if (this.spa == "react") {
+    } else if (this.mode == "react") {
         config.resolve.extensions.push(".jsx",".web.js",".web.jsx");
+    } 
+
+    // html 处理
+    let html = this.options.html;
+
+    if (this.mode == "multiple") {
+        config.plugins.push(...html.template.map(t => {
+            let params = {
+                filename: t.filename,
+                template: 'html-withimg-loader!'+resolve(process.cwd(), t.path),
+                inject: true,
+                excludeChunks: t.excludeChunks
+            };
+    
+            if (!dev) {
+                params = Object.assign({}, params, {
+                    minify: {
+                        removeComments: true,
+                        collapseWhitespace: true,
+                        removeAttributeQuotes: true
+                    },
+                    chunksSortMode: 'dependency'
+                })
+            }
+            return new HtmlWebpackPlugin(params);
+        }));
+    } else {
+        let params = {
+            filename: html.template.filename,
+            template: 'html-withimg-loader!'+resolve(process.cwd(), html.template.path),
+            inject: true,
+        };
+
+        if (!dev) {
+            params = Object.assign({}, params, {
+                minify: {
+                    removeComments: true,
+                    collapseWhitespace: true,
+                    removeAttributeQuotes: true
+                },
+                chunksSortMode: 'dependency'
+            })
+        }
+        config.plugins.push(new HtmlWebpackPlugin(params))
     }
 
-    if (this.options.html.data) {
+    if (html.data) {
         config.plugins.push(new InterpolateHtmlPlugin(this.options.html.data));
     }
 

@@ -1,6 +1,6 @@
 {
   "name": "flow-build",
-  "version": "0.1.13",
+  "version": "0.1.14",
   "description": "打包工具",
   "main": "src/middleware.js",
   "bin": {
@@ -45,6 +45,8 @@
     "url-loader": "^0.6.2",
     "webpack": "^3.10.0",
     "webpack-dev-server": "^2.11.1",
+    "webpack-dev-middleware": "^2.0.4",
+    "webpack-hot-middleware": "^2.21.0",
     "webpack-merge": "^4.1.1",
     "yargs": "^11.0.0"
   }

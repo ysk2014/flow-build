@@ -21,7 +21,7 @@ class Compontent extends Tapable {
         validateSchema(options);
 
         this.options = Object.assign({}, options);
-        this.spa = this.options.spa;
+        this.mode = this.options.mode;
 
         this.initBabelOptions(this.options);
 
@@ -34,9 +34,29 @@ class Compontent extends Tapable {
      * 检测入口文件是否存在
      */
     checkFiles() {
-        let entryPath = path.join(process.cwd(), this.options.entry.app);
-        let htmlPath = path.join(process.cwd(), this.options.html.template);
-        if (!checkRequiredFiles([entryPath, htmlPath])) {
+        let op = this.options;
+        let paths = [];
+        if (!Array.isArray(op.entry)) {
+            Object.keys(op.entry).forEach(key => {
+                paths.push(path.resolve(process.cwd(), op.entry[key]));
+            });
+        }
+
+        if (this.mode=="multiple") {
+            if (!Array.isArray(op.html.template)) {
+                console.log(chalk.red("  the template field is an array in the config file"));
+                process.exit(1);
+                return;
+            }
+
+            op.html.template.forEach(t => {
+                paths.push(path.resolve(process.cwd(), t.path));
+            });
+            
+        } else {
+            paths.push(path.resolve(process.cwd(), op.html.template.path));
+        }
+        if (!checkRequiredFiles(paths)) {
             process.exit(1);
         }
     }
@@ -58,7 +78,7 @@ class Compontent extends Tapable {
             needModules.push(CssEngines[options.css.engine]);
         }
 
-        if (options.spa=="vue") {
+        if (options.mode=="vue") {
             needModules.push("vue-style-loader","vue-loader","vue-template-compiler");
         }
 
@@ -223,7 +243,7 @@ class Compontent extends Tapable {
             extract: isProduction
         });
 
-        let obj = {
+        return {
             loaders: Object.assign({}, {
                 "js": {
                     loader: 'babel-loader',
@@ -238,7 +258,6 @@ class Compontent extends Tapable {
                 image: 'xlink:href'
             }
         }
-        return obj;
     }
 }
 

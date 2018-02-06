@@ -2,7 +2,8 @@
  * express的中间件
  * @returns
  * {
- *      compiler： 对webpack实例的封装
+ *      devMiddleware: webpack-dev-middleware的实例
+ *      hotMiddleware: webpack-hot-middleware的实例
  * }
  */
 
@@ -14,6 +15,8 @@ process.env.NODE_ENV = 'development';
 
 const chalk = require('chalk');
 const webpack = require('webpack');
+const webpackDevMiddleware = require("webpack-dev-middleware");
+const webpackHotMiddleware = require("webpack-hot-middleware");
 const Compontent = require("./Compontent");
 const createDevConfig = require('../config/webpack.dev.conf');
 const formatWebpackMessages = require('./utils/formatWebpackMessages');
@@ -22,7 +25,15 @@ class MiddleWare extends Compontent {
     constructor(options) {
         super(options);
 
-        this.compiler = this._createCompiler();
+        let compiler = this._createCompiler();
+        this.devMiddleware = webpackDevMiddleware(compiler, {
+            publicPath: this.options.dev.publicPath,
+            quiet: true
+        });
+        this.hotMiddleware = webpackHotMiddleware(compiler, {
+            log: false,
+            heartbeat: 2000
+        });
     }
 
     _createCompiler() {

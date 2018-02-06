@@ -1,7 +1,6 @@
 const path = require("path");
 const webpack = require("webpack");
 const merge = require("webpack-merge");
-const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
@@ -47,18 +46,6 @@ module.exports = function createProdConfig() {
                     : { safe: true }
             }),
 
-            new HtmlWebpackPlugin({
-                filename: this.options.html.filename,
-                template: 'html-withimg-loader!'+path.resolve(process.cwd(), this.options.html.template),
-                inject: true,
-                minify: {
-                    removeComments: true,
-                    collapseWhitespace: true,
-                    removeAttributeQuotes: true
-                },
-                chunksSortMode: 'dependency'
-            }),
-
             new webpack.HashedModuleIdsPlugin(),
             // enable scope hoisting
             new webpack.optimize.ModuleConcatenationPlugin(),
@@ -84,13 +71,13 @@ module.exports = function createProdConfig() {
             
         ]
     });
-
+    //白名单配置
     if (this.options.white && this.options.white.patterns && this.options.white.rules) {
         let CopyWebpackPlugin = require("copy-webpack-plugin");
         config.plugins.plugins(new CopyWebpackPlugin(this.options.white.patterns, this.options.white.rules));
     }
 
-    if (this.spa=="vue") {
+    if (this.mode=="vue") {
         config.plugins.push(
             new webpack.optimize.CommonsChunkPlugin({
                 name: 'app',
