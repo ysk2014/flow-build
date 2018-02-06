@@ -237,8 +237,47 @@
                     "type": "string"
                 },
                 "template": {
-                    "description": "html-webpack-plugin的template配置",
-                    "type": "string"
+                    "description": "html-webpack-plugin的配置",
+                    "anyof": [
+                        {
+                            "items": {
+                                "description": "A non-empty object",
+                                "minLength": 1,
+                                "type": "object",
+                                "properties": {
+                                    "filename": {
+                                        "description": "html-webpack-plugin的filename配置",
+                                        "type": "string"
+                                    },
+                                    "path": {
+                                        "description": "html-webpack-plugin的template配置",
+                                        "type": "string"
+                                    },
+                                    "excludeChunks": {
+                                        "description": "排除entry配置中无关的chunk",
+                                        "type": "array"
+                                    }
+                                }
+                            },
+                            "minItems": 1,
+                            "type": "array",
+                            "uniqueItems": true
+                        },
+                        {
+                            "description": "html-webpack-plugin的配置",
+                            "type": "object",
+                            "properties": {
+                                "filename": {
+                                    "description": "html-webpack-plugin的filename配置",
+                                    "type": "string"
+                                },
+                                "path": {
+                                    "description": "html-webpack-plugin的template配置",
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    ]
                 },
                 "data": {
                     "description": "html模板数据映射",
@@ -261,11 +300,11 @@
                 }
             }
         },
-        "spa": {
-            "description": "项目应用类型，vue/react/multiple/none",
+        "mode": {
+            "description": "项目应用类型，vue/react/multiple/spa",
             "type": "string",
-            "enum": ["vue", "react", "multiple","none"],
-            "default": "none"
+            "enum": ["vue", "react", "multiple","spa"],
+            "default": "spa"
         }
     }
 }
