@@ -1,6 +1,6 @@
 {
   "name": "flow-build",
-  "version": "0.1.12",
+  "version": "0.1.13",
   "description": "打包工具",
   "main": "src/middleware.js",
   "bin": {
