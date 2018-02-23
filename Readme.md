@@ -40,4 +40,4 @@ app.listen(config.dev.port);
 
 
 
-## [配置文档](http://gitlab.taihenw.com/music-fe/flow-build/blob/master/docs/config.md) 
+## [配置文档](https://github.com/ysk2014/flow-build/blob/master/docs/config.md) 

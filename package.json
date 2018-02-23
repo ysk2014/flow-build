@@ -9,7 +9,14 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "repository": {
+    "type":"git",
+    "url": "git+https://github.com/ysk2014/flow-build.git"
+  },
+  "author": {
+    "name": "claus",
+    "url": "https://github.com/ysk2014"
+  },
   "license": "ISC",
   "dependencies": {
     "ajv": "^6.1.1",
