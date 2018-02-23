@@ -11,12 +11,16 @@ const autoprefixer = require('autoprefixer');
 const chalk = require("chalk");
 const checkRequiredFiles = require("./utils/checkRequiredFiles");
 const validateSchema = require("./schema/v");
+const Logger = require("./utils/logger");
+
+let logger = new Logger("flow");
 
 const pkg = require(path.join(process.cwd(), './package.json'));
 
 class Compontent extends Tapable {
     constructor(options) {
         super();
+        logger.info("Check the options...");
         //对options进行格式化校验
         validateSchema(options);
 
@@ -26,36 +30,74 @@ class Compontent extends Tapable {
         this.initBabelOptions(this.options);
 
         this.checkFiles();
-
+        
         this.checkNodeModules(options);
+
+        if (this.mode == "ssr") {
+            if (this.options.dev.ssr) {
+                process.env.BABEL_ENV = 'development';
+                process.env.NODE_ENV = 'development';
+            } else {
+                process.env.BABEL_ENV = 'production';
+                process.env.NODE_ENV = 'production';
+            }
+        }
     }
 
     /**
      * 检测入口文件是否存在
      */
     checkFiles() {
+        logger.info("Check entry files...");
+
         let op = this.options;
         let paths = [];
-        if (!Array.isArray(op.entry)) {
-            Object.keys(op.entry).forEach(key => {
-                paths.push(path.resolve(process.cwd(), op.entry[key]));
-            });
+
+        let dealEntry = (entry)=> {
+            if (typeof entry == "string") {
+                paths.push(path.resolve(process.cwd(), entry))
+            } else if (!Array.isArray(entry)) {
+                Object.keys(entry).forEach(key => {
+                    paths.push(path.resolve(process.cwd(), entry[key]));
+                });
+            } else {
+                entry.forEach(key => {
+                    paths.push(path.resolve(process.cwd(), key))
+                });
+            }
+        };
+
+        // 判断webpack的entry文件是否存在，ssr情况下，必须有client和server
+        if (this.mode == "ssr") {
+            if (!op.entry.client || !op.entry.server) {
+                console.log(chalk.red("  In SSR mode, the entry.client field and the entry.server field must be included in the config file"));
+                process.exit(1);
+            }
+            dealEntry(op.entry.client);
+            dealEntry(op.entry.server);
+        } else {
+            dealEntry(op.entry);
         }
 
+        //判断html模板文件是否存在
         if (this.mode=="multiple") {
             if (!Array.isArray(op.html.template)) {
                 console.log(chalk.red("  the template field is an array in the config file"));
                 process.exit(1);
-                return;
             }
-
             op.html.template.forEach(t => {
                 paths.push(path.resolve(process.cwd(), t.path));
             });
-            
+        } else if (this.mode == "ssr") {
+            if (Array.isArray(op.html.template)) {
+                console.log(chalk.red("  In SSR mode, the html.template field must be object in the config file"));
+                process.exit(1);
+            }
+            paths.push(path.resolve(process.cwd(), op.html.template.path));
         } else {
             paths.push(path.resolve(process.cwd(), op.html.template.path));
         }
+
         if (!checkRequiredFiles(paths)) {
             process.exit(1);
         }
@@ -66,6 +108,8 @@ class Compontent extends Tapable {
      * @param {Object} options 
      */
     checkNodeModules(options) {
+        logger.info("Check whether the extensions you need to install have been installed in node_modules");
+        
         let needModules = [], unInstallModules = [], message = "> Error: Cannot find module ";
 
         if (Array.isArray(options.css.engine)) {
@@ -190,7 +234,7 @@ class Compontent extends Tapable {
             }
         }
         
-        const fallback = this.spa == "vue" ? "vue-style-loader" : "style-loader";
+        const fallback = (this.mode == "vue" || this.mode == "ssr") ? "vue-style-loader" : "style-loader";
 
         function generateLoaders (loader, loaderOptions) {
             const loaders = options.usePostCSS ? [cssLoader, postcssLoader] : [cssLoader]
@@ -251,6 +295,23 @@ class Compontent extends Tapable {
                 },
             }, cssLoaders),
             cssSourceMap: sourceMapEnabled,
+            postcss: {
+                sourceMap: sourceMapEnabled,
+                ident: 'postcss',
+                plugins: () => [
+                    require('postcss-flexbugs-fixes'),
+                    autoprefixer({
+                        browsers: [
+                            '>1%',
+                            'last 4 versions',
+                            'Firefox ESR',
+                            'not ie < 9',
+                        ],
+                        flexbox: 'no-2009',
+                    }),
+                ]
+            },
+            preserveWhitespace: false,
             transformToRequire: {
                 video: 'src',
                 source: 'src',
@@ -258,6 +319,10 @@ class Compontent extends Tapable {
                 image: 'xlink:href'
             }
         }
+    }
+
+    vendor() {
+        return ['vue', 'vue-router','vuex'].concat(this.options.build.vendor).filter(v => v)
     }
 }
 

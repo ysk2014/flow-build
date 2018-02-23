@@ -14,12 +14,14 @@ process.on('unhandledRejection', err => {
 });
 
 const path = require("path");
-const chalk = require('chalk');
 const webpack = require('webpack');
 
 const Component = require("./Compontent");
 const createProdConfig = require('../config/webpack.prod.conf');
 const formatWebpackMessages = require('./utils/formatWebpackMessages');
+const Logger = require("./utils/logger");
+
+let logger = new Logger("flow");
 
 class Builder extends Component {
     constructor(options) {
@@ -38,22 +40,14 @@ class Builder extends Component {
                 if (messages.errors.length > 1) {
                   messages.errors.length = 1;
                 }
+
+                logger.error('Failed to compile.\n');
+                console.log(messages.errors.join('\n\n'));
+                return;
             }
-            if (
-                process.env.CI &&
-                (typeof process.env.CI !== 'string' ||
-                  process.env.CI.toLowerCase() !== 'false') &&
-                messages.warnings.length
-            ) {
-                console.log(
-                    chalk.yellow(
-                        '\nTreating warnings as errors because process.env.CI = true.\n' +
-                        'Most CI servers set it automatically.\n'
-                    )
-                );
-            }
+           
             if (messages.warnings.length) {
-                console.log(chalk.yellow('> Compiled with warnings.\n'));
+                logger.warn('Compiled with warnings.\n');
                 console.log(messages.warnings.join('\n\n'));
             } else {
                 process.stdout.write('\n\n'+stats.toString({
@@ -63,11 +57,7 @@ class Builder extends Component {
                     chunks: false,
                     chunkModules: false
                 }) + '\n\n');
-                console.log(chalk.green('> Compiled successfully.\n'));
-                console.log(chalk.yellow(
-                    '  Tip: built files are meant to be served over an HTTP server.\n' +
-                    '  Opening index.html over file:// won\'t work.\n'
-                ))
+                logger.info('> Compiled successfully.\n');
             }
 
         }).catch(err => {
@@ -76,7 +66,7 @@ class Builder extends Component {
     }
 
     createCompiler() {
-        console.log('> Creating an optimized production build...');
+        logger.info('Creating an optimized production build...');
 
         let config = createProdConfig.call(this);
         let compiler = webpack(config);

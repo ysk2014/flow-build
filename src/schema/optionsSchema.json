@@ -55,7 +55,10 @@
                 {
                     "$ref": "#/definitions/entry"
                 }
-            ]
+            ],
+            "default": {
+                "app": "./src/js/index.js"
+            }
         },
         "srcDir": {
             "description": "项目源码目录",
@@ -112,6 +115,11 @@
                     "type": "boolean",
                     "default": false
                 },
+                "ssr": {
+                    "description": "是否ssr模式，默认为false",
+                    "type": "boolean",
+                    "default": false
+                },
                 "plugins": {
                     "description": "webpack的plugins配置",
                     "anyOf": [
@@ -123,6 +131,15 @@
                         }
                     ]
                 }
+            },
+            "default": {
+                "host": "localhost",
+                "port": 3000,
+                "publicPath": "/",
+                "errorOverlay": true,
+                "poll": false,
+                "devtool": "eval-source-map",
+                "cssSourceMap": false
             }
         },
         "build": {
@@ -166,6 +183,10 @@
                     "type":"boolean",
                     "default": false
                 },
+                "vendor": {
+                    "description": "公共组件",
+                    "type":"array"
+                },
                 "plugins": {
                     "description": "webpack的plugins配置",
                     "anyOf": [
@@ -177,6 +198,14 @@
                         }
                     ]
                 }
+            },
+            "default": {
+                "outputPath": "./dist",
+                "assetsSubDirectory": "static",
+                "publicPath": "/",
+                "devtool": "#source-map",
+                "cssSourceMap": true,
+                "analyze": false
             }
         },
         "js": {
@@ -195,6 +224,16 @@
                             "stage-2"
                         ]
                     }
+                }
+            },
+            "default": {
+                "babel": {
+                    "presets": [
+                        ["env", {
+                            "modules": false
+                        }],
+                        "stage-2"
+                    ]
                 }
             }
         },
@@ -215,6 +254,9 @@
                     ],
                     "default": "css"
                 }
+            },
+            "default": {
+                "engine": "css"
             }
         },
         "image": {
@@ -226,16 +268,15 @@
                     "type": "number",
                     "default": 1000
                 }
+            },
+            "default": {
+                "limit": 1000
             }
         },
         "html": {
             "description": "html配置",
             "type": "object",
             "properties": {
-                "filename": {
-                    "description": "html-webpack-plugin的filename配置",
-                    "type": "string"
-                },
                 "template": {
                     "description": "html-webpack-plugin的配置",
                     "anyof": [
@@ -283,6 +324,12 @@
                     "description": "html模板数据映射",
                     "type": "object"
                 }
+            },
+            "default": {
+                "template": {
+                    "filename": "index.html",
+                    "path": "./index.html"
+                }
             }
         },
         "white": {
@@ -303,7 +350,7 @@
         "mode": {
             "description": "项目应用类型，vue/react/multiple/spa",
             "type": "string",
-            "enum": ["vue", "react", "multiple","spa"],
+            "enum": ["vue", "react", "multiple","spa", "ssr"],
             "default": "spa"
         }
     }

@@ -49,8 +49,13 @@ if (env=="start") {
     const DevServer = require("../src/DevServer");
     complier = new DevServer(config);
 } else if (env == "build") {
-    const Builder = require("../src/Builder");
-    complier = new Builder(config);
+    if (config.mode == "ssr") {
+        const Builder = require("../src/SSRBuilder");
+        complier = new Builder(config);
+    } else {
+        const Builder = require("../src/Builder");
+        complier = new Builder(config);
+    }
 }
 
 complier.run();

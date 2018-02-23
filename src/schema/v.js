@@ -1,6 +1,5 @@
 const Ajv = require("ajv");
 const schema = require("./optionsSchema.json");
-const BaseError = require("../BaseError");
 
 const ajv = new Ajv({
 	errorDataPath: "configuration",
@@ -85,7 +84,7 @@ const indent = (str, prefix, firstLine) => {
 	}
 };
 
-class OptionsValidationError extends BaseError {
+class OptionsValidationError extends Error {
 	constructor(validationErrors) {
 		super();
 
@@ -213,6 +212,10 @@ class OptionsValidationError extends BaseError {
 			// eslint-disable-line no-fallthrough
 			return `${dataPath} ${err.message} (${JSON.stringify(err, 0, 2)}).\n${getSchemaPartText(err.parentSchema)}`;
 		}
+	}
+
+	inspect() {
+		return this.stack + (this.details ? `\n${this.details}` : "");
 	}
 }
 

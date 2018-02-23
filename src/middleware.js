@@ -13,13 +13,15 @@
 process.env.BABEL_ENV = 'development';
 process.env.NODE_ENV = 'development';
 
-const chalk = require('chalk');
 const webpack = require('webpack');
 const webpackDevMiddleware = require("webpack-dev-middleware");
 const webpackHotMiddleware = require("webpack-hot-middleware");
 const Compontent = require("./Compontent");
 const createDevConfig = require('../config/webpack.dev.conf');
 const formatWebpackMessages = require('./utils/formatWebpackMessages');
+const Logger = require("./utils/logger");
+
+let logger = new Logger("flow");
 
 class MiddleWare extends Compontent {
     constructor(options) {
@@ -52,7 +54,7 @@ class MiddleWare extends Compontent {
         try {
             compiler = webpack(devConfig);
         } catch (err) {
-            console.log(chalk.red('Failed to compile.'));
+            logger.error('Failed to compile.');
             console.log();
             console.log(err.message || err);
             console.log();
@@ -64,48 +66,26 @@ class MiddleWare extends Compontent {
             console.log('Compiling...');
         });
 
-        let isFirstCompile = true;
-
         //在webpack编译完成后，对webpack输出的日志进行格式输出
         compiler.plugin('done', stats => {
             const messages = formatWebpackMessages(stats.toJson({}, true));
             const isSuccessful = !messages.errors.length && !messages.warnings.length;
             if (isSuccessful) {
-                console.log(chalk.green('Compiled successfully!'));
+                logger.info('Compiled successfully!');
             }
-            if (isSuccessful && isFirstCompile) {
-                // printInstructions(appName, urls, useYarn);
-            }
-            isFirstCompile = false;
-
-            // If errors exist, only show errors.
+           
             if (messages.errors.length) {
-                // Only keep the first error. Others are often indicative
-                // of the same problem, but confuse the reader with noise.
                 if (messages.errors.length > 1) {
                     messages.errors.length = 1;
                 }
-                console.log(chalk.red('Failed to compile.\n'));
+                logger.error('Failed to compile.\n')
                 console.log(messages.errors.join('\n\n'));
                 return;
             }
 
-            // Show warnings if no errors were found.
             if (messages.warnings.length) {
-                console.log(chalk.yellow('Compiled with warnings.\n'));
+                logger.warn('Compiled with warnings.\n');
                 console.log(messages.warnings.join('\n\n'));
-
-                // Teach some ESLint tricks.
-                console.log(
-                    '\nSearch for the ' +
-                    chalk.underline(chalk.yellow('keywords')) +
-                    ' to learn more about each warning.'
-                );
-                console.log(
-                    'To ignore, add ' +
-                    chalk.cyan('// eslint-disable-next-line') +
-                    ' to the line before.\n'
-                );
             }
         })
 

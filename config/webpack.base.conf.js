@@ -65,7 +65,7 @@ module.exports = function webpackBaseConfig (dev) {
         ]
     }
 
-    if (this.mode == "vue") {
+    if (this.mode == "vue" || this.mode == "ssr") {
         config.module.rules.push({
             test: /\.vue$/,
             loader: 'vue-loader',
@@ -74,7 +74,7 @@ module.exports = function webpackBaseConfig (dev) {
                 isProduction: !dev
             })
         })
-        config.resolve.extensions.push(".vue");
+        config.resolve.extensions.push(".vue",".jsx");
         config.resolve.alias = {
             "@": resolve(this.options.srcDir),
             "vue$": "vue/dist/vue.esm.js"
@@ -101,13 +101,26 @@ module.exports = function webpackBaseConfig (dev) {
                     minify: {
                         removeComments: true,
                         collapseWhitespace: true,
-                        removeAttributeQuotes: true
+                        removeAttributeQuotes: true,
+                        useShortDoctype: true,
+                        removeEmptyAttributes: true,
+                        removeStyleLinkTypeAttributes: true,
+                        keepClosingSlash: true,
+                        minifyJS: true,
+                        minifyCSS: true,
+                        minifyURLs: true
                     },
                     chunksSortMode: 'dependency'
                 })
             }
             return new HtmlWebpackPlugin(params);
         }));
+    } else if (this.mode=="ssr") {
+        config.plugins.push(new HtmlWebpackPlugin({
+            filename: html.template.filename,
+            template: resolve(process.cwd(), html.template.path),
+            inject: false
+        }))
     } else {
         let params = {
             filename: html.template.filename,
@@ -120,16 +133,23 @@ module.exports = function webpackBaseConfig (dev) {
                 minify: {
                     removeComments: true,
                     collapseWhitespace: true,
-                    removeAttributeQuotes: true
+                    removeAttributeQuotes: true,
+                    useShortDoctype: true,
+                    removeEmptyAttributes: true,
+                    removeStyleLinkTypeAttributes: true,
+                    keepClosingSlash: true,
+                    minifyJS: true,
+                    minifyCSS: true,
+                    minifyURLs: true
                 },
                 chunksSortMode: 'dependency'
             })
         }
-        config.plugins.push(new HtmlWebpackPlugin(params))
-    }
+        config.plugins.push(new HtmlWebpackPlugin(params));
 
-    if (html.data) {
-        config.plugins.push(new InterpolateHtmlPlugin(this.options.html.data));
+        if (html.data) {
+            config.plugins.push(new InterpolateHtmlPlugin(this.options.html.data));
+        }
     }
 
     return Object.assign({}, config);

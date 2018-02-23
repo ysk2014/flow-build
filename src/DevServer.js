@@ -15,7 +15,6 @@ process.on('unhandledRejection', err => {
 
 const path = require("path");
 const url = require("url");
-const chalk = require('chalk');
 const webpack = require('webpack');
 const webpackDevServer = require('webpack-dev-server');
 const Compontent = require("./Compontent");
@@ -24,6 +23,10 @@ const createDevServerConfig = require('../config/webpackDevServer.conf');
 const createDevConfig = require('../config/webpack.dev.conf');
 const formatWebpackMessages = require('./utils/formatWebpackMessages');
 const openBrowser = require('./utils/openBrowser');
+
+const Logger = require("./utils/logger");
+
+let logger = new Logger("flow");
 
 
 class DevServer extends Compontent {
@@ -75,7 +78,7 @@ class DevServer extends Compontent {
                         return console.log(err);
                     }
 
-                    console.log(chalk.cyan('> Starting the development server...\n'));
+                    logger.info('Starting the development server...\n');
                     openBrowser(localUrlForBrowser);
                 });
 
@@ -103,7 +106,7 @@ class DevServer extends Compontent {
         try {
             compiler = webpack(devConfig)
         } catch (err) {
-            console.log(chalk.red('> Failed to compile.'));
+            logger.error('Failed to compile.');
             console.log();
             console.log(err.message || err);
             console.log();
@@ -112,38 +115,28 @@ class DevServer extends Compontent {
 
         //在webpack中如果项目重新编译，会触发该事件
         compiler.plugin('invalid', () => {
-            console.log('> Compiling...');
+            console.log('Compiling...');
         });
-
-        let isFirstCompile = true;
 
         //在webpack编译完成后，对webpack输出的日志进行格式输出
         compiler.plugin('done', stats => {
             const messages = formatWebpackMessages(stats.toJson({}, true));
             const isSuccessful = !messages.errors.length && !messages.warnings.length;
             if (isSuccessful) {
-                console.log(chalk.green('> Compiled successfully!'));
+                logger.info('Compiled successfully!');
             }
-            if (isSuccessful && isFirstCompile) {
-                // printInstructions(appName, urls, useYarn);
-            }
-            isFirstCompile = false;
 
-            // If errors exist, only show errors.
             if (messages.errors.length) {
-                // Only keep the first error. Others are often indicative
-                // of the same problem, but confuse the reader with noise.
                 if (messages.errors.length > 1) {
                     messages.errors.length = 1;
                 }
-                console.log(chalk.red('> Failed to compile.\n'));
+                logger.error('Failed to compile.\n');
                 console.log(messages.errors.join('\n\n'));
                 return;
             }
 
-            // Show warnings if no errors were found.
             if (messages.warnings.length) {
-                console.log(chalk.yellow('> Compiled with warnings.\n'));
+                logger.warn('Compiled with warnings.\n');
                 console.log(messages.warnings.join('\n\n'));
             }
         })
