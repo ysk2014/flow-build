@@ -224,6 +224,11 @@
                             "stage-2"
                         ]
                     }
+                },
+                "dirname": {
+                    "description": "输出js文件夹名称",
+                    "type": "string",
+                    "default": "js"
                 }
             },
             "default": {
@@ -234,7 +239,8 @@
                         }],
                         "stage-2"
                     ]
-                }
+                },
+                "dirname": "js"
             }
         },
         "css": {
@@ -253,10 +259,16 @@
                         }
                     ],
                     "default": "css"
+                },
+                "dirname": {
+                    "description": "输出css文件夹名称",
+                    "type": "string",
+                    "default": "css"
                 }
             },
             "default": {
-                "engine": "css"
+                "engine": "css",
+                "dirname": "css"
             }
         },
         "image": {
@@ -267,10 +279,22 @@
                     "description": "图片转化base64的条件配置",
                     "type": "number",
                     "default": 1000
+                },
+                "dirname": {
+                    "description": "输出image文件夹名称",
+                    "type": "string",
+                    "default": "images"
+                },
+                "merge": {
+                    "description": "是否要合图",
+                    "type": "boolean",
+                    "default": false
                 }
             },
             "default": {
-                "limit": 1000
+                "limit": 1000,
+                "dirname": "images",
+                "merge": false
             }
         },
         "html": {

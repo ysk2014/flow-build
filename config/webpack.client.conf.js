@@ -21,7 +21,7 @@ module.exports = function createClientConfig() {
             rules: this.styleLoaders({
                 sourceMap: env.cssSourceMap,
                 extract: !dev,
-                usePostCSS: true
+                merge: this.options.image.merge
             })
         },
         plugins: [
@@ -91,6 +91,12 @@ module.exports = function createClientConfig() {
                     : { safe: true }
             })
         );
+
+        //合图配置
+        if (this.options.image.merge) {
+            const ImergePlugin = require('imerge-loader').Plugin;
+            config.plugins.push(new ImergePlugin());
+        }
 
         if (env.analyze) {
             const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;

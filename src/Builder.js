@@ -57,7 +57,7 @@ class Builder extends Component {
                     chunks: false,
                     chunkModules: false
                 }) + '\n\n');
-                logger.info('> Compiled successfully.\n');
+                logger.info('Compiled successfully.\n');
             }
 
         }).catch(err => {

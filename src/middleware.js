@@ -9,10 +9,6 @@
 
 "use strict"
 
-//初始化项目环境
-process.env.BABEL_ENV = 'development';
-process.env.NODE_ENV = 'development';
-
 const webpack = require('webpack');
 const webpackDevMiddleware = require("webpack-dev-middleware");
 const webpackHotMiddleware = require("webpack-hot-middleware");
@@ -26,6 +22,10 @@ let logger = new Logger("flow");
 class MiddleWare extends Compontent {
     constructor(options) {
         super(options);
+
+        //初始化项目环境
+        process.env.BABEL_ENV = 'development';
+        process.env.NODE_ENV = 'development';
 
         let compiler = this._createCompiler();
         this.devMiddleware = webpackDevMiddleware(compiler, {

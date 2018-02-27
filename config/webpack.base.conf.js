@@ -6,14 +6,16 @@ const InterpolateHtmlPlugin = require('../src/utils/InterpolateHtmlPlugin');
 module.exports = function webpackBaseConfig (dev) {
     const nodeModulesDir = join(process.cwd(), './node_modules');
 
-    let env = dev ? this.options.dev : this.options.build
+    let env = dev ? this.options.dev : this.options.build;
+    let jsDirname = this.options.js.dirname;
+    let imageDirname = this.options.image.dirname;
 
     const config = {
         devtool:  env.devtool,
         entry: this.options.entry,
         output: {
             path: resolve(process.cwd(), this.options.build.outputPath),
-            filename: this.assetsPath(dev ? "js/[name].js" : "js/[name].[chunkhash].js"),
+            filename: this.assetsPath(dev ? `${jsDirname}/[name].js` : `${jsDirname}/[name].[chunkhash].js`),
             publicPath: env.publicPath
         },
         performance: {
@@ -38,7 +40,7 @@ module.exports = function webpackBaseConfig (dev) {
                     loader: 'url-loader',
                     options: {
                         limit: this.options.image.limit,
-                        name: this.assetsPath('img/[name].[hash:7].[ext]')
+                        name: this.assetsPath(`${imageDirname}/[name].[hash:7].[ext]`)
                     }
                 },
                 {

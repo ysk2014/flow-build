@@ -12,13 +12,15 @@ let createBase = require("./webpack.base.conf");
 module.exports = function createProdConfig() {
     let base = createBase.call(this, false);
     let env = this.options.build;
+    let cssDirname = this.options.css.dirname;
+    
 
     let config = merge(base, {
         module: {
             rules: this.styleLoaders({
                 sourceMap: env.cssSourceMap,
                 extract: true,
-                usePostCSS: true
+                merge: this.options.image.merge
             })
         },
         plugins: [
@@ -36,7 +38,7 @@ module.exports = function createProdConfig() {
             }),
 
             new ExtractTextPlugin({
-                filename: this.assetsPath('css/[name].[contenthash].css'),
+                filename: this.assetsPath(`${cssDirname}/[name].[contenthash].css`),
                 allChunks: false,
             }),
 
@@ -71,6 +73,15 @@ module.exports = function createProdConfig() {
             
         ]
     });
+
+    //合图配置
+    if (this.options.image.merge) {
+        const ImergePlugin = require('imerge-loader').Plugin;
+        config.plugins.push(new ImergePlugin({
+            spriteTo: env.assetsSubDirectory ? `./${env.assetsSubDirectory}/${this.options.image.dirname}` : this.options.image.dirname
+        }));
+    }
+
     //白名单配置
     if (this.options.white && this.options.white.patterns && this.options.white.rules) {
         let CopyWebpackPlugin = require("copy-webpack-plugin");

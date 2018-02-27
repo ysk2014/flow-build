@@ -15,7 +15,7 @@ module.exports = function webpackDevConfig () {
 
     let config = merge(base, {
         module: {
-            rules: this.styleLoaders({ sourceMap: env.cssSourceMap, usePostCSS: true })
+            rules: this.styleLoaders({ sourceMap: env.cssSourceMap })
         },
         plugins: [
             new webpack.HotModuleReplacementPlugin(),

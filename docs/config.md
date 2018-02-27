@@ -183,6 +183,11 @@ entry: {
 }
 
 ```
+* dirname
+    > js输出文件夹
+
+    - 类型：`string`
+    - 默认：`js`
 
 ---
 
@@ -199,6 +204,12 @@ entry: {
     - 类型：`string` or `array`
     - 默认：`css`
 
+* dirname
+    > css输出文件夹
+
+    - 类型：`string`
+    - 默认：`css`
+
 ---
 
 ## image
@@ -213,6 +224,18 @@ entry: {
 
     - 类型：`number`
     - 默认：`1000`
+
+* dirname
+    > image输出文件夹
+
+    - 类型：`string`
+    - 默认：`images`
+
+* merge
+    > 是否要合图
+
+    - 类型：`boolean`
+    - 默认：`false`
 
 ---
 

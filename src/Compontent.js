@@ -98,6 +98,8 @@ class Compontent extends Tapable {
             paths.push(path.resolve(process.cwd(), op.html.template.path));
         }
 
+        
+
         if (!checkRequiredFiles(paths)) {
             process.exit(1);
         }
@@ -110,7 +112,7 @@ class Compontent extends Tapable {
     checkNodeModules(options) {
         logger.info("Check whether the extensions you need to install have been installed in node_modules");
         
-        let needModules = [], unInstallModules = [], message = "> Error: Cannot find module ";
+        let needModules = [], unInstallModules = [], message = "Error: Cannot find module ";
 
         if (Array.isArray(options.css.engine)) {
             options.css.engine.forEach(item => {
@@ -130,6 +132,11 @@ class Compontent extends Tapable {
             needModules.push("webpack-bundle-analyzer");
         }
 
+        //判断是否要安装合图插件imerge-loader
+        if (options.image.merge) {
+            needModules.push("imerge-loader");
+        }
+
         const NowModules = Object.keys(pkg["devDependencies"]);
         needModules.forEach( n=> {
             if (NowModules.indexOf(n)<0) {
@@ -139,8 +146,9 @@ class Compontent extends Tapable {
         });
 
         if (unInstallModules.length>0) {
-            console.log(chalk.red(message));
-            console.log(chalk.cyan("  Please install these modules before packing"));
+            logger.error(message);
+            logger.warn("Please install these modules before packing: \n");
+            console.log("npm install --save-dev "+unInstallModules.join(" "));
             process.exit(1);
         }
 
@@ -237,7 +245,14 @@ class Compontent extends Tapable {
         const fallback = (this.mode == "vue" || this.mode == "ssr") ? "vue-style-loader" : "style-loader";
 
         function generateLoaders (loader, loaderOptions) {
-            const loaders = options.usePostCSS ? [cssLoader, postcssLoader] : [cssLoader]
+            const loaders = [cssLoader, postcssLoader];
+
+            if (options.extract && options.merge) {
+                loaders.push({
+                    loader: 'imerge-loader'
+                })
+            }
+
             if (loader) {
                 loaders.push({
                     loader: loader + '-loader',
