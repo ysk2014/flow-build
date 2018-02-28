@@ -225,6 +225,7 @@ class Compontent extends Tapable {
         var postcssLoader = {
             loader: 'postcss-loader',
             options: {
+                useConfigFile: false,
                 sourceMap: options.sourceMap,
                 ident: 'postcss',
                 plugins: () => [
