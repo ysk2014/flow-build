@@ -3,7 +3,7 @@ const webpack = require("webpack");
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const InterpolateHtmlPlugin = require('../src/utils/InterpolateHtmlPlugin');
 
-module.exports = function webpackBaseConfig (dev) {
+module.exports = function webpackBaseConfig (dev, client) {
     const nodeModulesDir = join(process.cwd(), './node_modules');
 
     let env = dev ? this.options.dev : this.options.build;
@@ -117,13 +117,14 @@ module.exports = function webpackBaseConfig (dev) {
             }
             return new HtmlWebpackPlugin(params);
         }));
-    } else if (this.mode=="ssr") {
+    } else if (this.mode=="ssr" && client) {
+        let filename = html.template.filename == 'index.html' ? 'index.ssr.html' : html.template.filename;
         config.plugins.push(new HtmlWebpackPlugin({
-            filename: html.template.filename,
+            filename: filename,
             template: resolve(process.cwd(), html.template.path),
             inject: false
         }))
-    } else {
+    } else if (this.mode != "ssr") {
         let params = {
             filename: html.template.filename,
             template: 'html-withimg-loader!'+resolve(process.cwd(), html.template.path),

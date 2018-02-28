@@ -12,7 +12,7 @@ let createBase = require("./webpack.base.conf");
 
 module.exports = function createClientConfig() {
     let dev = this.options.dev.ssr;
-    let base = createBase.call(this, this.options.dev.ssr);
+    let base = createBase.call(this, this.options.dev.ssr, true);
     let env = dev ? this.options.dev : this.options.build;
 
     let config = merge(base, {

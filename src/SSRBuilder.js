@@ -19,6 +19,8 @@ class SSRBuilder extends Compontent {
     constructor(options) {
         super(options);
 
+        this.options.dev.ssr = true;
+        
         this.compilers = [];
         this.webpackDevMiddleware = null;
         this.webpackHotMiddleware = null;
