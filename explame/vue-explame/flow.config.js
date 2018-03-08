@@ -34,15 +34,7 @@ module.exports = {
     },
 
     js: {
-        //babel配置
-        babel: {
-            "presets": [
-                ["env", {
-                    "modules": false
-                }],
-                "stage-2"
-            ]
-        }
+        
     },
     
     //css

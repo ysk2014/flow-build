@@ -1,3 +1,3 @@
 import "../css/main.css"
 
-console.log("5")
+console.log("6")

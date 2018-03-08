@@ -5,3 +5,13 @@
 html {
     font-size: 12px;
 }
+
+a {
+    background: url('../images/logo.png') no-repeat 10px 0;
+    imerge: icon;
+}
+
+p {
+    background: url('../images/test.png') no-repeat 0 0;
+    imerge: icon;
+}

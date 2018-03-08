@@ -34,15 +34,7 @@ module.exports = {
     },
 
     js: {
-        //babel配置
-        babel: {
-            "presets": [
-                ["env", {
-                    "modules": false
-                }],
-                "stage-2"
-            ]
-        }
+
     },
     
     //css
@@ -65,5 +57,5 @@ module.exports = {
         }
     },
     // 项目应用类型，vue/react/multiple/spa
-    mode:"spa"
+    mode:"ssr"
 }

@@ -4,9 +4,8 @@
 
 const path = require("path");
 const checkRequiredFiles = require("../src/utils/checkRequiredFiles");
-const DevServer = require("../src/DevServer");
 
-let env, complier;
+let env;
 
 let argv = require('yargs')
     // .version(require('../package').version)
@@ -45,17 +44,14 @@ if (!checkRequiredFiles([ConfigFilePath])) {
 
 let config = require(ConfigFilePath);
 
+let Builder = require("../src/index");
+
 if (env=="start") {
-    const DevServer = require("../src/DevServer");
-    complier = new DevServer(config);
-} else if (env == "build") {
-    if (config.mode == "ssr") {
-        const Builder = require("../src/SSRBuilder");
-        complier = new Builder(config);
-    } else {
-        const Builder = require("../src/Builder");
-        complier = new Builder(config);
-    }
+    config.env = "dev";
+} else {
+    config.env = "prod";
 }
 
-complier.run();
+let builder = new Builder(config);
+
+builder.run();

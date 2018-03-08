@@ -77,7 +77,7 @@
                 "port": {
                     "description": "开发环境的端口号，默认为3000",
                     "type": "number",
-                    "default": 3001
+                    "default": 3000
                 },
                 "publicPath": {
                     "description": "开发环境的静态资源cdn地址，默认为/",
@@ -114,22 +114,6 @@
                     "description": "是否生成css的sourceMap配置，默认为false",
                     "type": "boolean",
                     "default": false
-                },
-                "ssr": {
-                    "description": "是否ssr模式，默认为false",
-                    "type": "boolean",
-                    "default": false
-                },
-                "plugins": {
-                    "description": "webpack的plugins配置",
-                    "anyOf": [
-                        {
-                            "type": "array"
-                        },
-                        {
-                            "enum": [null]
-                        }
-                    ]
                 }
             },
             "default": {
@@ -177,26 +161,6 @@
                     "description": "是否生成css的sourceMap配置，默认为true",
                     "type": "boolean",
                     "default": true
-                },
-                "analyze": {
-                    "description": "分析并可视化构建后的打包文件",
-                    "type":"boolean",
-                    "default": false
-                },
-                "vendor": {
-                    "description": "公共组件",
-                    "type":"array"
-                },
-                "plugins": {
-                    "description": "webpack的plugins配置",
-                    "anyOf": [
-                        {
-                            "type": "array"
-                        },
-                        {
-                            "enum": [null]
-                        }
-                    ]
                 }
             },
             "default": {
@@ -213,34 +177,20 @@
             "type": "object",
             "additionalProperties": false,
             "properties": {
-                "babel": {
-                    "description": "babel配置",
-                    "type": "object",
-                    "default": {
-                        "presets": [
-                            ["env", {
-                                "modules": false
-                            }],
-                            "stage-2"
-                        ]
-                    }
-                },
                 "dirname": {
                     "description": "输出js文件夹名称",
                     "type": "string",
                     "default": "js"
+                },
+                "hash": {
+                    "description": "输出js文件hash的大小",
+                    "type": "number",
+                    "default": 16
                 }
             },
             "default": {
-                "babel": {
-                    "presets": [
-                        ["env", {
-                            "modules": false
-                        }],
-                        "stage-2"
-                    ]
-                },
-                "dirname": "js"
+                "dirname": "js",
+                "hash": 16
             }
         },
         "css": {
@@ -264,11 +214,17 @@
                     "description": "输出css文件夹名称",
                     "type": "string",
                     "default": "css"
+                },
+                "hash": {
+                    "description": "输出css文件hash大小",
+                    "type": "number",
+                    "default": 16
                 }
             },
             "default": {
                 "engine": "css",
-                "dirname": "css"
+                "dirname": "css",
+                "hash": 16
             }
         },
         "image": {
@@ -285,16 +241,44 @@
                     "type": "string",
                     "default": "images"
                 },
-                "merge": {
+                "imerge": {
                     "description": "是否要合图",
                     "type": "boolean",
                     "default": false
+                },
+                "hash": {
+                    "description": "输出image文件hash大小",
+                    "type": "number",
+                    "default": 16
                 }
             },
             "default": {
                 "limit": 1000,
                 "dirname": "images",
-                "merge": false
+                "imerge": false,
+                "hash": 16
+            }
+        },
+        "font": {
+            "description": "font配置",
+            "type": "object",
+            "properties": {
+                
+                "dirname": {
+                    "description": "输出font文件夹名称",
+                    "type": "string",
+                    "default": "fonts"
+                },
+                
+                "hash": {
+                    "description": "输出font文件hash大小",
+                    "type": "number",
+                    "default": 7
+                }
+            },
+            "default": {
+                "dirname": "fonts",
+                "hash": 7
             }
         },
         "html": {
@@ -372,10 +356,29 @@
             }
         },
         "mode": {
-            "description": "项目应用类型，vue/react/multiple/spa",
+            "description": "项目应用类型，vue/react/multiple/spa/ssr",
             "type": "string",
             "enum": ["vue", "react", "multiple","spa", "ssr"],
             "default": "spa"
+        },
+        "env": {
+            "description": "项目环境",
+            "type": "string",
+            "enum": ["dev", "test", "prod"],
+            "default": "dev"
+        },
+        "loaders": {
+            "description": "webpack的loader插件",
+            "type": "object"
+        },
+        "plugins": {
+            "description": "webpack的plugins插件",
+            "type": "object"
+        },
+        "hooks": {
+            "description": "flow打包插件",
+            "type": "array",
+            "default": []
         }
     }
 }
