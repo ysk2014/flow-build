@@ -11,8 +11,6 @@ const Logger = require("./utils/logger");
 
 let logger = new Logger("flow");
 
-let PureHook = require("../hooks/pure");
-
 module.exports = class Builder extends EventEmitter {
     constructor(options) {
         super();
@@ -21,7 +19,6 @@ module.exports = class Builder extends EventEmitter {
 
         this.options = Object.assign({}, options);
 
-        this.options.hooks.push(new PureHook);
         this.initHook();
 
         this.mode = this.options.mode;

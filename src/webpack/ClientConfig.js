@@ -38,7 +38,7 @@ class ClientConfig extends BaseConfig {
         if (this.env == "dev") {
             this.setPublicpath(config.dev.publicPath);
             this.setDevTool(config.dev.devtool);
-            this.builder.emit("devServer", this);
+            this.setDevServer(this.createDevServer(config.dev));
         } else {
             this.setPublicpath(config.build.publicPath);
             this.setOutputChunkFileName(config.js.dirname, config.js.hash);
@@ -46,6 +46,28 @@ class ClientConfig extends BaseConfig {
         }
 
         this.builder.emit('client-config', this);
+    }
+
+    createDevServer(dev) {
+        return {
+            compress: true,
+            clientLogLevel: 'warning',
+            historyApiFallback: true,
+            hot: true,
+            inline: true,
+            host: dev.host,
+            port: dev.port,
+            overlay: dev.errorOverlay ? {
+                warnings: false,
+                errors: true,
+            } : false,
+            publicPath: dev.publicPath,
+            proxy: dev.proxyTable,
+            quiet: true, // necessary for FriendlyErrorsPlugin
+            watchOptions: {
+                poll: dev.poll
+            }
+        };
     }
 }
 
