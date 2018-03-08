@@ -6,7 +6,7 @@
 - 在相应的打包阶段，引入自己的行为
 
 事件名  | 触发条件 | 参数   
-:-:|:-:|:-:|:-:
+:-:|:-:|:-:
 entry-option | 检测完配置文件触发 | builder
 base-config  | 初始化环境变量触发 | base - 设置基础webpack配置的实例
 merge-loader  | 合并loader触发 | base - 设置基础webpack配置的实例
