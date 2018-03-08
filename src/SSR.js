@@ -66,7 +66,7 @@ class SSRBuilder {
                 process.nextTick(resolve);
             });
 
-            if (this.env) {
+            if (this.env == "dev") {
                 if (compiler.options.name == "client") {
                     return this.webpackDev(compiler);
                 }

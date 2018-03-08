@@ -122,8 +122,7 @@ module.exports = class Builder extends EventEmitter {
             let SpaCompontent = require("./Spa");
             new SpaCompontent(this);
         } else {
-            let SSRCompontent = require("./SSR");
-            new SSRCompontent(this);
+            this.build()
         }
     }
 
