@@ -54,8 +54,8 @@ module.exports = {
 
 ## 特殊配置
 
-- [开发环境配置](./docs/dev.md)
-- [打包环境配置](./docs/build.md)
-- [loaders配置](./docs/loaders.md)
-- [plugins配置](./docs/plugins.md)
-- [hooks配置](./docs/hooks.md)
+- [开发环境配置](./dev.md)
+- [打包环境配置](./build.md)
+- [loaders配置](./loaders.md)
+- [plugins配置](./plugins.md)
+- [hooks配置](./hooks.md)
