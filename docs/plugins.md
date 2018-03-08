@@ -5,7 +5,7 @@
 > 增强配置
 
 plugins  | 别名 | 默认是否开启/开启环境
-:-:|:-:|:-:|:-:
+:-:|:-:|:-:
 webpack.DefinePlugin | define | true 
 npm-install-webpack-plugin | npm | false
 webpack.NoEmitOnErrorsPlugin | error | true
