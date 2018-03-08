@@ -2,18 +2,20 @@
 
 ## 内置plugins
 
-|plugins  | 别名 | 默认是否开启/开启环境|
-|:-:|:-:|:-:|:-:|
-|webpack.DefinePlugin | define | true |
-|npm-install-webpack-plugin | npm | false |
-|webpack.NoEmitOnErrorsPlugin | error | true |
-|webpack.NamedModulesPlugin | nameModule | true/dev |
-|webpack.HashedModuleIdsPlugin | hashModule | true/test, prod
-|webpack.HotModuleReplacementPlugin | hot | true/dev
-|webpack.optimize.ModuleConcatenationPlugin | module | true/test, prod
-|webpack.optimize.UglifyJsPlugin | uglifyJs | true/prod
-|extract-text-webpack-plugin | extract | true/test, prod
-|optimize-css-assets-webpack-plugin | optimizeCSS | true/test, prod
+> 增强配置
+
+plugins  | 别名 | 默认是否开启/开启环境
+:-:|:-:|:-:|:-:
+webpack.DefinePlugin | define | true 
+npm-install-webpack-plugin | npm | false
+webpack.NoEmitOnErrorsPlugin | error | true
+webpack.NamedModulesPlugin | nameModule | true/dev
+webpack.HashedModuleIdsPlugin | hashModule | true/test, prod
+webpack.HotModuleReplacementPlugin | hot | true/dev
+webpack.optimize.ModuleConcatenationPlugin | module | true/test, prod
+webpack.optimize.UglifyJsPlugin | uglifyJs | true/prod
+extract-text-webpack-plugin | extract | true/test, prod
+optimize-css-assets-webpack-plugin | optimizeCSS | true/test, prod
 html-webpack-plugin | html | true
 webpack.optimize.CommonsChunkPlugin | vendor | true/test, prod
 webpack.optimize.CommonsChunkPlugin | manifest | true/test, prod
