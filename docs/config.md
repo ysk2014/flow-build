@@ -54,6 +54,7 @@ module.exports = {
 
 ## 特殊配置
 
+- [基本配置](./base.md)
 - [开发环境配置](./dev.md)
 - [打包环境配置](./build.md)
 - [loaders配置](./loaders.md)
