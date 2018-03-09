@@ -19,23 +19,12 @@ class ServerConfig extends BaseConfig {
     }
     
     initialize(config) {
+        this.initBase(config);
+        
         this.setEntry(config.entry.server);
         this.setTarget('node');
         this.setNode(false);
-
-        this.setOutputPath(config.build.outputPath);
-        this.setOutputFileName(config.js.dirname, config.js.hash);
         this.setLibraryTarget("commonjs2");
-
-        this.setImageName(config.image.dirname, config.image.hash);
-        this.setCssName(config.css.dirname, config.css.hash);
-        this.setFontName(config.font.dirname, config.font.hash);
-
-        //hook: mergeloaders
-        this.setLoaders(config.loaders);
-
-
-        this.setPlugins(config.plugins);
 
         if (this.env == "dev") {
             this.setPublicpath(config.dev.publicPath);

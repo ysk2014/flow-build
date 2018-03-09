@@ -20,20 +20,10 @@ class ClientConfig extends BaseConfig {
     }
 
     initialize(config) {
+        this.initBase(config);
+
         this.setEntry(config.entry);
-        this.setOutputPath(config.build.outputPath);
-        this.setOutputFileName(config.js.dirname, config.js.hash);
-        
-        this.setImageName(config.image.dirname, config.image.hash);
-        this.setCssName(config.css.dirname, config.css.hash);
-        this.setFontName(config.font.dirname, config.font.hash);
 
-        //hook: mergeloaders
-        this.setLoaders(config.loaders);
-
-        // hook: mergePlugin
-        this.setPlugins(config.plugins);
-        
         //hook: setDevTool
         if (this.env == "dev") {
             this.setPublicpath(config.dev.publicPath);

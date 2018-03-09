@@ -38,6 +38,24 @@ class BaseConfig {
         // this.devDependencies = fs.existsSync(pkgFile) ? require(pkgFile).devDependencies : {};
     }
 
+    initBase(config) {
+        this.setImageName(config.image.dirname, config.image.hash);
+        this.setCssName(config.css.dirname, config.css.hash);
+        this.setFontName(config.font.dirname, config.font.hash);
+
+        this.setOutputPath(config.build.outputPath);
+        this.setOutputFileName(config.js.dirname, config.js.hash);
+
+        this.setAlias(config.alias);
+        this.setExtensions(config.extensions);
+
+        //hook: mergeloaders
+        this.setLoaders(config.loaders);
+
+        // hook: mergePlugin
+        this.setPlugins(config.plugins);
+    }
+
     initEnv(config = {}) {
         this.env = config.env || "dev";
         this.dev = false;
@@ -80,6 +98,8 @@ class BaseConfig {
     }
 
     setExtensions(extensions) {
+        if (!extensions) return;
+
         if (this.webpackConfig.resolve.extensions) {
             this.webpackConfig.resolve.extensions = _.union(this.webpackConfig.resolve.extensions, extensions);
         } else {
@@ -88,10 +108,14 @@ class BaseConfig {
     }
 
     setExternals(externals) {
+        if (!externals) return;
+
         this.webpackConfig.externals = _.union(this.webpackConfig.externals, externals);
     }
 
     setAlias(alias) {
+        if (!alias) return;
+
         if (this.webpackConfig.resolve.alias) {
             this.webpackConfig.resolve.alias = Object.assign({}, this.webpackConfig.resolve.alias, alias);
         } else {
@@ -260,18 +284,23 @@ class BaseConfig {
     }
 
     setOutput(output) {
+        if (!output) return;
         this.webpackConfig.output = output
     }
 
     setLibrary(library) {
+        if (!library) return;
         this.webpackConfig.output.library = library;
     }
 
     setLibraryTarget(libraryTarget) {
+        if (!libraryTarget) return;
+
         this.webpackConfig.output.libraryTarget = libraryTarget;
     }
 
     setNode(node) {
+        if (!node) return;
         this.webpackConfig.node = node;
     }
 
@@ -421,6 +450,7 @@ class BaseConfig {
         }
     }
     setTarget(target) {
+        if (!target) return;
         this.webpackConfig.target = target;
     }
 
@@ -453,6 +483,7 @@ class BaseConfig {
     }
 
     setResolveLoaderModules(modules) {
+        if (!modules) return;
         this.webpackConfig.resolveLoader.modules = _.union(this.webpackConfig.resolveLoader.modules, modules);
     }
 

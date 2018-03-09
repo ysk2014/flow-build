@@ -367,6 +367,14 @@
             "enum": ["dev", "test", "prod"],
             "default": "dev"
         },
+        "alias": {
+            "description": "webpack的alias",
+            "type": "object"
+        },
+        "extensions": {
+            "description": "webpack的extensions",
+            "type": "array"
+        },
         "loaders": {
             "description": "webpack的loader插件",
             "type": "object"
