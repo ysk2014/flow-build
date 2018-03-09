@@ -67,10 +67,6 @@ class BaseConfig {
         this.webpackConfig.entry = entry;
     }
 
-    setDevtool(devtool) {
-        this.webpackConfig.devtool = devtool;
-    }
-
     setOutputPath(outputPath) {
         if (path.isAbsolute(outputPath)) {
             this.webpackConfig.output.path = outputPath;

@@ -56,3 +56,109 @@ module.exports = {
     ]
 }
 ```
+
+## hook可以是loaders和plugins配置的总结
+
+> 可以使用`merge-loader`和`merge-plugin`事件把`loader`和`plugin`与默认进行合并，比如：
+
+```js
+module.exports = {
+    loades: [
+        loader1,
+        loader2,
+        loader3,
+        loader4,
+
+        ....
+
+        loadern
+    ],
+    plugins: [
+        plugin1,
+        plugin2,
+        ....
+        pluginn
+    ]
+}
+```
+像这种情况，就可以使用hook来完善：
+
+- 创建一个loader.js文件
+
+```js
+// loader.js
+exports.loader1 = {};
+exports.loader2 = {};
+......
+exports.loadern = {};
+
+```
+- 创建一个plugin.js文件
+
+```js
+exports.plugin1 = {};
+exports.plugin2 = {};
+......
+exports.pluginn = {};
+```
+
+hook文件
+```js
+let loaders = require("loader");
+let plugins = require("plugin");
+
+module.exports = class MyHook {
+    constructor() {
+
+    }
+
+    apply(builder) {
+        builder.on("merge-loader", (base)=> {
+            base.mergeLoader(loaders);
+        });
+        builder.on("merge-plugin", (base)=> {
+            base.mergePlugin(plugins);
+        })
+    }
+}
+```
+
+
+## hook也是webpack配置的增强项
+
+> 可能现在配置，不满足项目的需求，要更改一些webpack配置。hook提供了此功能，分别在`base-config`、`client-config`、`server-config`的生命周期中，提供了base、client、server相应的对象，这些对象提供了一些设置webpack配置的方法。
+
+- setEntry
+- setDevTool
+- setOutputPath
+- setPublicpath
+- setExtensions
+- setExternals
+- setAlias
+- setOutputFileName
+- setOutputChunkFileName
+- setOutput
+- setLibrary
+- setLibraryTarget
+- setNode
+- setImageName
+- setFontName
+- setCssName
+- setDevServer
+- setTarget
+- setResolveLoaderModules
+
+```js
+class MyHook {
+    constructor() {},
+
+    apply(builder) {
+        builder.on("client-config", (client) => {
+            client.setAlias({
+                "@": path.resolve(builder.options.srcDir),
+                "vue$": "vue/dist/vue.esm.js"
+            });
+        })
+    }
+}
+```
