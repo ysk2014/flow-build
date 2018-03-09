@@ -161,3 +161,15 @@ entry: {
 
 - 类型：`string`
 - 默认：'dev'
+
+## alias
+
+> webpack的alias
+
+- 类型：`object`
+
+## extensions
+
+> webpack的extensions
+
+- 类型：`array`

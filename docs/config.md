@@ -41,6 +41,12 @@ module.exports = {
     //项目环境，dev/test/prod
     env: "dev",
 
+    // webpack的alias
+    alias: {},
+
+    //webpack的extensions
+    extensions: [],
+
     //对webpack的loader进行补充、关闭、覆盖
     loaders: {},
 
