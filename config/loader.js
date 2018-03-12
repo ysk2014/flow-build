@@ -6,15 +6,7 @@ exports.babel = {
     exclude: /node_modules/,
     use: [
         {
-            loader: require.resolve("babel-loader"),
-            options: {
-                "presets": [
-                    ["env", {
-                        "modules": false
-                    }],
-                    "stage-2"
-                ]
-            }
+            loader: require.resolve("babel-loader")
         }
     ]
 };

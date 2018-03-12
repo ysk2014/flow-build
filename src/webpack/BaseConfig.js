@@ -18,7 +18,33 @@ class BaseConfig {
             imerge: config.image.imerge,
             html: config.html,
             white: config.white,
-            loaderOptions: {}
+            loaderOptions: {
+                babel: config.js.babel ? config.js.babel : {
+                    "presets": [
+                        ["env", {
+                            "modules": false
+                        }],
+                        "stage-2"
+                    ]
+                },
+                postcss: config.css.postcss ? config.css.postcss : {
+                    useConfigFile: false,
+                    ident: 'postcss',
+                    sourceMap: false,
+                    plugins: () => [
+                        require('postcss-flexbugs-fixes'),
+                        require('autoprefixer')({
+                            browsers: [
+                                '>1%',
+                                'last 4 versions',
+                                'Firefox ESR',
+                                'not ie < 9',
+                            ],
+                            flexbox: 'no-2009',
+                        }),
+                    ]
+                }
+            }
         };
         this.webpack = webpack;
         this.utils = utils;
@@ -65,10 +91,12 @@ class BaseConfig {
             this.prod = true;
             this.config.cssSourceMap = (config.build && config.build.cssSourceMap) || true;
             this.config.extract =  true;
+            this.config.loaderOptions.postcss.sourceMap =  this.config.cssSourceMap;
         } else if (this.env == "test") {
             this.test = true;
             this.config.cssSourceMap = (config.build && config.build.cssSourceMap) || true;
             this.config.extract =  true;
+            this.config.loaderOptions.postcss.sourceMap =  this.config.cssSourceMap;
         } else {
             this.dev = true;
             this.config.cssSourceMap = (config.dev && config.dev.cssSourceMap) || false;
@@ -244,22 +272,7 @@ class BaseConfig {
     }
 
     createPostCssLoader(loaderOptions = {}) {
-        let options = Object.assign({}, {
-            useConfigFile: false,
-            ident: 'postcss',
-            plugins: () => [
-                require('postcss-flexbugs-fixes'),
-                require('autoprefixer')({
-                    browsers: [
-                        '>1%',
-                        'last 4 versions',
-                        'Firefox ESR',
-                        'not ie < 9',
-                    ],
-                    flexbox: 'no-2009',
-                }),
-            ],
-        }, loaderOptions);
+        let options = Object.assign({}, this.config.loaderOptions, loaderOptions);
 
         return {
             loader: 'postcss-loader',

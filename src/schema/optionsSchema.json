@@ -177,6 +177,10 @@
             "type": "object",
             "additionalProperties": false,
             "properties": {
+                "babel": {
+                    "description": "js的babel设置",
+                    "type": "object"
+                },
                 "dirname": {
                     "description": "输出js文件夹名称",
                     "type": "string",
@@ -209,6 +213,10 @@
                         }
                     ],
                     "default": "css"
+                },
+                "postcss": {
+                    "description": "postcss配置",
+                    "type": "object"
                 },
                 "dirname": {
                     "description": "输出css文件夹名称",

@@ -28,6 +28,25 @@ entry: {
 
 - 类型：`object`
 
+* babel
+
+    > babel的配置
+
+    - 类型：`object`
+    - 默认：
+
+    ```js
+    {
+        "presets": [
+            ["env", {
+                "modules": false
+            }],
+            "stage-2"
+        ]
+    }
+    ```
+    **提示：** 如果配置该属性，会覆盖掉默认配置，不会合并
+
 * dirname
     > js输出文件夹
 
@@ -52,6 +71,33 @@ entry: {
 
     - 类型：`string` or `array`
     - 默认：`css`
+
+* postcss
+
+    > postcss配置
+
+    - 类型：`object`
+    - 默认：
+    ```js
+    {
+        useConfigFile: false,
+        ident: 'postcss',
+        sourceMap: false,
+        plugins: () => [
+            require('postcss-flexbugs-fixes'),
+            require('autoprefixer')({
+                browsers: [
+                    '>1%',
+                    'last 4 versions',
+                    'Firefox ESR',
+                    'not ie < 9',
+                ],
+                flexbox: 'no-2009',
+            }),
+        ]
+    }
+    ```
+    **提示：** 如果配置该属性，会覆盖掉默认配置，不会合并
 
 * dirname
     > css输出文件夹
