@@ -7,7 +7,7 @@
 plugins  | 别名 | 默认是否开启/开启环境
 :-:|:-:|:-:
 webpack.DefinePlugin | define | true 
-npm-install-webpack-plugin | npm | false
+npm-install-webpack3-plugin | npm | false
 webpack.NoEmitOnErrorsPlugin | error | true
 webpack.NamedModulesPlugin | nameModule | true/dev
 webpack.HashedModuleIdsPlugin | hashModule | true/test, prod
