@@ -244,7 +244,7 @@ class BaseConfig {
                     
                     useloaders[i].options = Object.assign({
                         sourceMap: this.config.cssSourceMap
-                    }, useloaders[i].options, this.config.loaderOptions[label]);
+                    }, useloaders[i].options, this.config.loaderOptions[label] || this.config.loaderOptions[name]);
                 });
 
                 if (cssExtension.includes(name)) {
@@ -272,7 +272,7 @@ class BaseConfig {
     }
 
     createPostCssLoader(loaderOptions = {}) {
-        let options = Object.assign({}, this.config.loaderOptions, loaderOptions);
+        let options = Object.assign({}, this.config.loaderOptions.postcss, loaderOptions);
 
         return {
             loader: 'postcss-loader',

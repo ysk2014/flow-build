@@ -5,6 +5,7 @@ const chalk = require("chalk");
 const fs = require("fs-extra");
 const checkRequiredFiles = require("./utils/checkRequiredFiles");
 const validateSchema = require("./schema/v");
+const openBrowser = require("./utils/openBrowser");
 let {getClientConfig, getServerConfig, ServerConfig, ClientConfig, webpack} = require("./webpack");
 
 const Logger = require("./utils/logger");
@@ -113,6 +114,7 @@ module.exports = class Builder extends EventEmitter {
             logger.info("Before packing, remove the output folder");
             fs.remove(path.resolve(process.cwd(), this.options.build.outputPath));
         }
+
         this.emit("run", this);
         
         if (this.mode == "spa" || this.mode == "vue") {
@@ -136,4 +138,9 @@ module.exports = class Builder extends EventEmitter {
             if (obj.apply) obj.apply(this);
         });
     }
+
+    openBrowser(host, port) {
+        openBrowser(host, port);
+    }
+
 }

@@ -17,8 +17,8 @@ exports.define = {
 };
 
 exports.npm = {
-    enable: false,
-    name: 'npm-install-webpack-plugin',
+    enable: true,
+    name: 'npm-install-webpack3-plugin',
     args: {
       dev: true
     }

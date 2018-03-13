@@ -1,4 +1,3 @@
-const url = require("url");
 const webpackDevServer = require('webpack-dev-server');
 const formatWebpackMessages = require('./utils/formatWebpackMessages');
 const openBrowser = require("./utils/openBrowser");
@@ -22,15 +21,6 @@ module.exports = class Spa {
     devServer(options) {
         let host = options.dev.host || "0.0.0.0";
         let port = options.dev.port;
-
-        //生成打开浏览器时的url地址
-        const protocol = process.env.HTTPS === 'true' ? 'https' : 'http';
-        const localUrlForBrowser = url.format({
-            protocol: protocol,
-            hostname: host,
-            port,
-            pathname: '/',
-        });
         
         //由于webpack-dev-server在node api使用方式下，浏览器不能自动刷新，此方法解决不自动刷新的bug
         //参数地址：https://github.com/webpack/webpack-dev-server/issues/994
@@ -46,7 +36,7 @@ module.exports = class Spa {
             }
 
             logger.info('Starting the development server...\n');
-            openBrowser(localUrlForBrowser);
+            openBrowser(host, port);
         });
 
         ['SIGINT', 'SIGTERM'].forEach(function(sig) {

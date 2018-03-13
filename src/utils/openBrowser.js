@@ -1,6 +1,7 @@
 
 'use strict';
 
+const url = require("url");
 const chalk = require('chalk');
 let {execSync, spawn}  = require('child_process');
 const opn = require('opn');
@@ -98,16 +99,26 @@ function startBrowserProcess(browser, url) {
  * Reads the BROWSER evironment variable and decides what to do with it. Returns
  * true if it opened a browser or ran a node.js script, otherwise false.
  */
-function openBrowser(url) {
+function openBrowser(host = "0.0.0.0", port = 3000) {
+
+  //生成打开浏览器时的url地址
+  const protocol = process.env.HTTPS === 'true' ? 'https' : 'http';
+  const localUrlForBrowser = url.format({
+      protocol: protocol,
+      hostname: host,
+      port,
+      pathname: '/',
+  });
+
   const { action, value } = getBrowserEnv();
   switch (action) {
     case Actions.NONE:
       // Special case: BROWSER="none" will prevent opening completely.
       return false;
     case Actions.SCRIPT:
-      return executeNodeScript(value, url);
+      return executeNodeScript(value, localUrlForBrowser);
     case Actions.BROWSER:
-      return startBrowserProcess(value, url);
+      return startBrowserProcess(value, localUrlForBrowser);
     default:
       throw new Error('Not implemented.');
   }

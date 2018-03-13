@@ -6,6 +6,7 @@ const { remove } = require("fs-extra");
 const webpack = require("webpack");
 const webpackDevMiddleware = require("webpack-dev-middleware");
 const webpackHotMiddleware = require("webpack-hot-middleware");
+const formatWebpackMessages = require('./utils/formatWebpackMessages');
 const Logger = require("./utils/logger");
 
 let logger = new Logger("flow");
@@ -56,14 +57,33 @@ class SSRBuilder {
         await sequence(this.compilers, compiler => new Promise(async (resolve, reject) => {
             compiler.plugin('done',  async stats => {
 
-                this.flow.emit("ssr-done", sharedFS, callback);
-                
-                if (compiler.options.name == "client") {
-                    logger.info("Webpack client compiled successfully");
-                } else {
-                    logger.info("Webpack server compiled successfully");
+                let messages = formatWebpackMessages(stats.toJson({}, true));
+                const isSuccessful = !messages.errors.length && !messages.warnings.length;
+
+                if (messages.errors.length) {
+                    if (messages.errors.length > 1) {
+                        messages.errors.length = 1;
+                    }
+                    logger.error('Failed to compile.\n');
+                    console.log(messages.errors.join('\n\n'));
+                    return reject(new Error('Webpack build exited with errors'))
                 }
-                process.nextTick(resolve);
+
+                if (messages.warnings.length) {
+                    logger.warn('Compiled with warnings.\n');
+                    console.log(messages.warnings.join('\n\n'));
+                }
+
+                if (isSuccessful) {
+                    this.flow.emit("ssr-done", sharedFS, callback);
+                
+                    if (compiler.options.name == "client") {
+                        logger.info("Webpack client compiled successfully");
+                    } else {
+                        logger.info("Webpack server compiled successfully");
+                    }
+                    process.nextTick(resolve);
+                }
             });
 
             if (this.env == "dev") {
@@ -91,7 +111,9 @@ class SSRBuilder {
                     logger.info('Compiled successfully.\n')
                 }
             })
-        }));
+        })).catch(e => {
+            process.exit();
+        });
 
         return {
             devMiddleware: this.webpackDevMiddleware,
