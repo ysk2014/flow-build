@@ -168,8 +168,7 @@
                 "assetsSubDirectory": "static",
                 "publicPath": "/",
                 "devtool": "#source-map",
-                "cssSourceMap": true,
-                "analyze": false
+                "cssSourceMap": true
             }
         },
         "js": {
