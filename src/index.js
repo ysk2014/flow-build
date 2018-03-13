@@ -97,6 +97,11 @@ module.exports = class Builder extends EventEmitter {
                 process.exit(1);
             }
             paths.push(path.resolve(process.cwd(), op.html.template.path));
+
+            //bugs: mode为ssr时，filename不能为index.html
+            if (op.html.template.filename == "index.html") {
+                this.options.html.template.filename = "index.ssr.html"
+            }
         } else {
             paths.push(path.resolve(process.cwd(), op.html.template.path));
         }
