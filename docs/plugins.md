@@ -19,9 +19,11 @@ optimize-css-assets-webpack-plugin | optimizeCSS | true/test, prod
 html-webpack-plugin | html | true
 webpack.optimize.CommonsChunkPlugin | vendor | true/test, prod
 webpack.optimize.CommonsChunkPlugin | manifest | true/test, prod
-imagemin-webpack-plugin | imagemin | false/prod
+imagemin-webpack-plugin | imagemini | false/prod
 webpack-bundle-analyzer | analyzer | false
 copy-webpack-plugin | copy | false
+
+> **注意** 设置imagemini和analyzer为true，需要安装其相应的插件
 
 ## plugins 配置
 
