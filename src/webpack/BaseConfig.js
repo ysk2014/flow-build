@@ -227,7 +227,7 @@ class BaseConfig {
                     itemLoader.use = itemLoader.use.apply(this);
                 }
 
-                if (this.config.imerge) {
+                if (this.config.imerge && cssExtension.includes(name) && this.config.extract) {
                     useloaders.splice(1,0,{loader: 'imerge-loader'});
                 }
 
@@ -242,9 +242,13 @@ class BaseConfig {
 
                     let label = this.utils.getLoaderLabel(k);
                     
-                    useloaders[i].options = Object.assign({
-                        sourceMap: this.config.cssSourceMap
-                    }, useloaders[i].options, this.config.loaderOptions[label] || this.config.loaderOptions[name]);
+                    if (cssExtension.includes(name)) {
+                        useloaders[i].options = Object.assign({
+                            sourceMap: this.config.cssSourceMap
+                        }, useloaders[i].options, this.config.loaderOptions[label] || this.config.loaderOptions[name]);
+                    } else {
+                        useloaders[i].options = Object.assign({}, useloaders[i].options, this.config.loaderOptions[label] || this.config.loaderOptions[name]);
+                    }
                 });
 
                 if (cssExtension.includes(name)) {

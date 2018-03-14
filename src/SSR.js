@@ -61,9 +61,6 @@ class SSRBuilder {
                 const isSuccessful = !messages.errors.length && !messages.warnings.length;
 
                 if (messages.errors.length) {
-                    if (messages.errors.length > 1) {
-                        messages.errors.length = 1;
-                    }
                     logger.error('Failed to compile.\n');
                     console.log(messages.errors.join('\n\n'));
                     return reject(new Error('Webpack build exited with errors'))
