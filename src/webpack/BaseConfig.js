@@ -449,7 +449,7 @@ class BaseConfig {
         });
 
         if (this.env != "dev" && this.config.imerge) {
-            let ImergePlugin = this.utils.requireModule("imerge-loader", modules).plugin;
+            let ImergePlugin = this.utils.requireModule("imerge-loader", modules).Plugin;
             webpackPlugins.push(new ImergePlugin());
         }
 
