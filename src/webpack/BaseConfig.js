@@ -455,7 +455,7 @@ class BaseConfig {
                 webpackPlugins.push(new ImergePlugin(this.config.imerge));
             } else {
                 webpackPlugins.push(new ImergePlugin({
-                    spritTo: self._config.build.assetsSubDirectory+"/"+self._config.image.dirname+"/imerge"
+                    spriteTo: self._config.build.assetsSubDirectory+"/"+self._config.image.dirname+"/imerge"
                 }));
             }
         }
