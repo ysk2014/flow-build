@@ -394,6 +394,7 @@ class BaseConfig {
     }
 
     setPlugins(plugins) {
+        let self = this;
         this.builder.emit("merge-plugin", this);
         this.mergePlugin(plugins);
 
@@ -450,7 +451,13 @@ class BaseConfig {
 
         if (this.env != "dev" && this.config.imerge) {
             let ImergePlugin = this.utils.requireModule("imerge-loader", modules).Plugin;
-            webpackPlugins.push(new ImergePlugin());
+            if (_.isPlainObject(this.config.imerge)) {
+                webpackPlugins.push(new ImergePlugin(this.config.imerge));
+            } else {
+                webpackPlugins.push(new ImergePlugin({
+                    spritTo: self._config.build.assetsSubDirectory+"/"+self._config.image.dirname+"/imerge"
+                }));
+            }
         }
 
         this.webpackConfig.plugins = webpackPlugins;

@@ -250,7 +250,14 @@
                 },
                 "imerge": {
                     "description": "是否要合图",
-                    "type": "boolean",
+                    "anyOf": [
+                        {
+                            "type": "object"
+                        },
+                        {
+                            "type": "boolean"
+                        }
+                    ],
                     "default": false
                 },
                 "hash": {
