@@ -1,6 +1,6 @@
 {
   "name": "flow-build",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "打包工具",
   "main": "src/index.js",
   "bin": {

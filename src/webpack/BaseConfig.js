@@ -28,7 +28,6 @@ class BaseConfig {
                     ]
                 },
                 postcss: config.css.postcss ? config.css.postcss : {
-                    useConfigFile: false,
                     ident: 'postcss',
                     sourceMap: false,
                     plugins: () => [
