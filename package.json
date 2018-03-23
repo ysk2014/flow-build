@@ -1,18 +1,25 @@
 {
   "name": "flow-build",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "打包工具",
   "main": "src/index.js",
   "bin": {
     "flow": "bin/flow"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node ./test/cmd.js"
   },
   "repository": {
     "type":"git",
     "url": "git+https://github.com/ysk2014/flow-build.git"
   },
+  "keywords": [
+    "webpack",
+    "webpack-dev-server",
+    "flow-build",
+    "flow-vue-hook",
+    "flow-vue-ssr-hool"
+  ],
   "author": {
     "name": "claus",
     "url": "https://github.com/ysk2014"
