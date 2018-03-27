@@ -84,7 +84,7 @@
                     "type": "string",
                     "default": "/"
                 },
-                "proxyTable": {
+                "proxy": {
                     "description": "开发环境的代理",
                     "type": "object"
                 },

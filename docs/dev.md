@@ -26,7 +26,7 @@
     - 类型：`string`
     - 默认：`/`
 
-### proxyTable
+### proxy
 
     > 开发环境的代理, 基于webpack配置
 

@@ -52,7 +52,7 @@ class ClientConfig extends BaseConfig {
                 errors: true,
             } : false,
             publicPath: dev.publicPath,
-            proxy: dev.proxyTable,
+            proxy: dev.proxy,
             quiet: true, // necessary for FriendlyErrorsPlugin
             watchOptions: {
                 poll: dev.poll
