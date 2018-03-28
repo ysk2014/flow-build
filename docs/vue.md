@@ -30,7 +30,7 @@ module.exports = {
 ### 安装
 
 ```js
-npm install --save-dev flow-vue-ssr-hook
+npm install --save-dev flow-vue-ssr-hook flow-vue-ssr-middleware
 ```
 ### flow.config.js配置文件
 
@@ -62,46 +62,46 @@ module.exports = {
 - clientManifest
     > webpack插件`vue-server-renderer/client-plugin`生成的json文件，默认为：vue-ssr-client-manifest.json
 
-### `flow-build`的build方法
+### 使用方法
 
-> 需要传入一个回调函数callback，用来生成`vue-server-renderer`的`renderer`，和返回webpack-dev-middleware以及webpack-hot-middleware的实例
+
 
 ```js
-function createRenderer (_fs = fs) {
-    const template = fs.readFileSync(templatePath, 'utf-8')
-    let distPath = path.resolve(process.cwd(), 'dist')
-
-    const bundle = JSON.parse(_fs.readFileSync(path.resolve(distPath, './server-bundle.json'), "utf-8"))
-    const clientManifest = JSON.parse(_fs.readFileSync(path.resolve(distPath, './vue-ssr-client-manifest.json'), "utf-8"));
-
-    renderer = createBundleRenderer(bundle, {
-        cache: LRU({
-            max: 1000,
-            maxAge: 1000 * 60 * 15
-        }),
-        basedir: resolve('./dist'),
-        runInNewContext: false,
-        template,
-        clientManifest
-    });
-}
+const path = require('path')
+const express = require('express')
+const favicon = require('serve-favicon')
+const vueSSRMiddleware = require("flow-vue-ssr-middleware");
+const resolve = file => path.resolve(__dirname, file)
 
 
-let SSRBuilder = require("flow-build");
-let builder = new SSRBuilder(require('./flow.config'));
 
-async function createServer() {
-    let { devMiddleware, hotMiddleware } = await builder.build(createRenderer);
-    app.use(hotMiddleware);
-    app.use(devMiddleware);
+const isProd = process.env.NODE_ENV === 'production'
 
-    app.use(render)
+const app = express()
 
-    const port = process.env.PORT || 3000
-    app.listen(port, () => {
-        console.log(`server started at localhost:${port}`)
-        builder.openBrowser("localhost", port)
-    })
-}
 
+const serve = (path, cache) => express.static(resolve(path), {
+  maxAge: cache && isProd ? 1000 * 60 * 60 * 24 * 30 : 0
+})
+
+app.use(favicon('./public/logo-48.png'))
+
+// static
+app.use('/static', serve('./dist/static', true))
+
+let instance = vueSSRMiddleware({
+  template: resolve('./src/index.template.html'),
+  context: {
+    title: 'Vue 2.0', // default title
+  }
+});
+
+app.use(instance);
+
+const port = process.env.PORT || 3000
+
+app.listen(port, () => {
+  console.log(`server started at localhost:${port}`)
+  instance.openBrowser && instance.openBrowser("localhost", port);
+})
 ```
