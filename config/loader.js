@@ -14,7 +14,9 @@ exports.babel = {
 exports.eslint = {
     enable: false,
     test: /\.jsx?$/,
-    use: ['eslint-loader'],
+    use: [{
+        loader: 'eslint-loader'
+    }],
     exclude: /node_modules/,
     enforce: 'pre'
 };
@@ -23,7 +25,9 @@ exports.typescript = {
     enable: false,
     test: /\.ts$/,
     exclude: [/node_modules/],
-    use: ['ts-loader']
+    use: [{
+        loader: 'ts-loader'
+    }]
 };
   
 exports.tslint = {
@@ -31,7 +35,9 @@ exports.tslint = {
     test: /\.ts$/,
     exclude: /node_modules/,
     enforce: 'pre',
-    use: ['tslint-loader']
+    use: [{
+        loader: 'tslint-loader'
+    }]
 };
 
 exports.css = {
