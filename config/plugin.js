@@ -102,7 +102,8 @@ exports.html = {
         let obj = { 
             filename: this.config.html.template.filename,
             template: path.resolve(this.baseDir, this.config.html.template.path),
-            inject: true 
+            inject: true,
+            chunksSortMode: 'dependency'
         };
 
         if (this.env!="dev") {
@@ -118,8 +119,7 @@ exports.html = {
                     minifyJS: true,
                     minifyCSS: true,
                     minifyURLs: true
-                },
-                chunksSortMode: 'dependency'
+                }
             })
         };
         return obj;
