@@ -179,8 +179,16 @@ class BaseConfig {
             const loader = target[key];
 
             if (loader) {
-                if (_.isPlainObject(sourceLoader) && sourceLoader.enable === undefined) {
-                    target[key].enable = true;
+                if (_.isPlainObject(sourceLoader)) {
+                    if (sourceLoader.enable === undefined) {
+                        target[key].enable = true;
+                    }
+                    if (sourceLoader.exclude) {
+                        target[key].exclude = sourceLoader.exclude;
+                    }
+                    if (sourceLoader.include) {
+                        target[key].include = sourceLoader.include;
+                    }
                 }
 
                 if (_.isBoolean(sourceLoader)) {
