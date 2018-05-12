@@ -57,6 +57,7 @@ class BaseConfig {
         this.loaders = _.cloneDeep(require('../../config/loader'));
         this.plugins = _.cloneDeep(require('../../config/plugin'));
         if (config.white && config.white.patterns && config.white.rules) {
+            if (!config.white.rules.context) config.white.rules.context = process.cwd();
             this.plugins.copy.enable = true;
         }
         // const pkgFile = path.join(this.baseDir, 'package.json');
