@@ -365,7 +365,8 @@
                 },
                 "rules": {
                     "description": "白名单规则",
-                    "type": "object"
+                    "type": "object",
+                    "default": {}
                 }
             }
         },
