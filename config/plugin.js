@@ -76,7 +76,7 @@ exports.extract = {
     env: ['test', 'prod'],
     enable: true,
     args() {
-        return { filename: this.config.cssName };
+        return { filename: this.config.cssName, allChunks: true };
     }
 };
 
