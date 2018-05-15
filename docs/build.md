@@ -22,7 +22,7 @@
 
     > 打包的静态资源cdn地址，默认为/
 
-    - 类型：`string`
+    - 类型：`string` or `function`
     - 默认：`/`
 
 ### devtool

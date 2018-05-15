@@ -142,7 +142,14 @@
                 },
                 "publicPath": {
                     "description": "打包的静态资源cdn地址，默认为/",
-                    "type": "string",
+                    "anyOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "instanceof": "Function"
+                        }
+                    ],
                     "default": "/"
                 },
                 "devtool": {

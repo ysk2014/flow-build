@@ -22,8 +22,9 @@ webpack.optimize.CommonsChunkPlugin | manifest | true/test, prod
 imagemin-webpack-plugin | imagemini | false/prod
 webpack-bundle-analyzer | analyzer | false
 copy-webpack-plugin | copy | false
+progress-bar-webpack-plugin | processbar | false
 
-> **注意** 设置imagemini和analyzer为true，需要安装其相应的插件
+> **注意** 设置imagemini、analyzer和processbar为true，需要安装其相应的插件
 
 ## plugins 配置
 

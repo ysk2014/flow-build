@@ -189,6 +189,26 @@ exports.copy = {
     }
 }
 
-
+exports.processbar = {
+    enable: false,
+    env: ['test', 'prod'],
+    name: 'progress-bar-webpack-plugin',
+    args() {
+        let format, complete;
+        if (this.type== "client") {
+            format = `${chalk.green.bold('*')} ${chalk.green('client')} :bar ${chalk.green.bold(':percent')} :msg`;
+            complete = chalk.green('█')
+        }  else {
+            format = `${chalk.yellow.bold('*')} ${chalk.yellow('server')} :bar ${chalk.yellow.bold(':percent')} :msg`;
+            complete = chalk.yellow('█')
+        }
+        return {
+            complete: complete,
+            incomplete: chalk.white('█'),
+            format: format,
+            clear: true
+        }
+    }
+}
 
   
