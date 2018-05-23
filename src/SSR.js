@@ -1,18 +1,24 @@
-"use strict"
+"use strict";
 
 const path = require("path");
-const MFS = require('memory-fs');
+const MFS = require("memory-fs");
 const { remove } = require("fs-extra");
 const webpack = require("webpack");
 const webpackDevMiddleware = require("webpack-dev-middleware");
 const webpackHotMiddleware = require("webpack-hot-middleware");
-const formatWebpackMessages = require('./utils/formatWebpackMessages');
+const formatWebpackMessages = require("./utils/formatWebpackMessages");
 const Logger = require("./utils/logger");
 
 let logger = new Logger("flow");
 
-
+/**
+ * 同构打包
+ */
 class SSRBuilder {
+    /**
+     * 构造器
+     * @param {*} flow
+     */
     constructor(flow) {
         this.flow = flow;
         this.env = flow.env;
@@ -26,9 +32,12 @@ class SSRBuilder {
             children: false,
             chunks: false,
             chunkModules: false
-        }
+        };
     }
-
+    /**
+     * 打包
+     * @param {*} callback
+     */
     async build(callback) {
         logger.info("Building files...");
 
@@ -54,82 +63,102 @@ class SSRBuilder {
             return compiler;
         });
 
-        await sequence(this.compilers, compiler => new Promise(async (resolve, reject) => {
-            compiler.plugin('done',  async stats => {
+        await sequence(
+            this.compilers,
+            compiler =>
+                new Promise(async (resolve, reject) => {
+                    compiler.plugin("done", async stats => {
+                        let messages = formatWebpackMessages(
+                            stats.toJson({}, true)
+                        );
+                        const isSuccessful =
+                            !messages.errors.length &&
+                            !messages.warnings.length;
 
-                let messages = formatWebpackMessages(stats.toJson({}, true));
-                const isSuccessful = !messages.errors.length && !messages.warnings.length;
+                        if (messages.errors.length) {
+                            logger.error("Failed to compile.\n");
+                            console.log(messages.errors.join("\n\n"));
+                            return reject(
+                                new Error("Webpack build exited with errors")
+                            );
+                        }
 
-                if (messages.errors.length) {
-                    logger.error('Failed to compile.\n');
-                    console.log(messages.errors.join('\n\n'));
-                    return reject(new Error('Webpack build exited with errors'))
-                }
+                        if (messages.warnings.length) {
+                            logger.warn("Compiled with warnings.\n");
+                            console.log(messages.warnings.join("\n\n"));
+                        }
 
-                if (messages.warnings.length) {
-                    logger.warn('Compiled with warnings.\n');
-                    console.log(messages.warnings.join('\n\n'));
-                }
+                        if (isSuccessful) {
+                            this.flow.emit("ssr-done", sharedFS, callback);
 
-                if (isSuccessful) {
-                    this.flow.emit("ssr-done", sharedFS, callback);
-                
-                    if (compiler.options.name == "client") {
-                        logger.info("Webpack client compiled successfully");
-                    } else {
-                        logger.info("Webpack server compiled successfully");
+                            if (compiler.options.name == "client") {
+                                logger.info(
+                                    "Webpack client compiled successfully"
+                                );
+                            } else {
+                                logger.info(
+                                    "Webpack server compiled successfully"
+                                );
+                            }
+                            process.nextTick(resolve);
+                        }
+                    });
+
+                    if (this.env == "dev") {
+                        if (compiler.options.name == "client") {
+                            return this.webpackDev(compiler);
+                        }
+
+                        compiler.watch({}, err => {
+                            if (err) return reject(err);
+                        });
+                        return;
                     }
-                    process.nextTick(resolve);
-                }
-            });
 
-            if (this.env == "dev") {
-                if (compiler.options.name == "client") {
-                    return this.webpackDev(compiler);
-                }
+                    compiler.run((err, stats) => {
+                        if (err) {
+                            console.log(err);
+                            return reject(err);
+                        }
 
-                compiler.watch({}, err => {
-                    if (err) return reject(err)
+                        process.stdout.write(
+                            "\n\n" + stats.toString(this.webpackStats) + "\n\n"
+                        );
+
+                        if (stats.hasErrors()) {
+                            return reject(
+                                new Error("Webpack build exited with errors")
+                            );
+                        } else {
+                            logger.info("Compiled successfully.\n");
+                        }
+                    });
                 })
-                return;
-            }
-
-            compiler.run((err, stats) => {
-                if (err) {
-                    console.log(err);
-                    return reject(err);
-                }
-
-                process.stdout.write('\n\n'+stats.toString(this.webpackStats) + '\n\n');
-
-                if (stats.hasErrors()) {
-                    return reject(new Error('Webpack build exited with errors'))
-                } else {
-                    logger.info('Compiled successfully.\n')
-                }
-            })
-        })).catch(e => {
+        ).catch(e => {
             process.exit();
         });
 
         return {
             devMiddleware: this.webpackDevMiddleware,
             hotMiddleware: this.webpackHotMiddleware
-        }
+        };
     }
-
+    /**
+     * 初始化webpack-dev-middleware和webpack-hot-middleware
+     * @param {*} compiler
+     */
     webpackDev(compiler) {
         logger.info("Adding webpack middleware...");
 
         // Create webpack dev middleware
-        this.webpackDevMiddleware = webpackDevMiddleware(compiler,{
+        this.webpackDevMiddleware = webpackDevMiddleware(compiler, {
             publicPath: this.flow.options.dev.publicPath,
-            logLevel: 'silent'
-        })
-        
+            logLevel: "silent"
+        });
+
         this.webpackDevMiddleware.close = this.webpackDevMiddleware.close;
 
-        this.webpackHotMiddleware = webpackHotMiddleware(compiler,{
+        this.webpackHotMiddleware = webpackHotMiddleware(compiler, {
             log: false,
             heartbeat: 10000
         });
@@ -137,10 +166,14 @@ class SSRBuilder {
 }
 
 module.exports = SSRBuilder;
-
+/**
+ * promise化队列循环处理
+ * @param {*} tasks
+ * @param {*} fn
+ */
 function sequence(tasks, fn) {
     return tasks.reduce(
-      (promise, task) => promise.then(() => fn(task)),
-      Promise.resolve()
-    )
+        (promise, task) => promise.then(() => fn(task)),
+        Promise.resolve()
+    );
 }

@@ -29,11 +29,11 @@ module.exports = {
             }
         }
 
-        return loaderName.replace(/-loader$/, '').replace(/-/g, '');
+        return loaderName.replace(/-loader$/, "").replace(/-/g, "");
     },
 
     requireModule(name, modules) {
-        if (typeof name === 'object') {
+        if (typeof name === "object") {
             return name;
         }
         if (path.isAbsolute(name)) {
@@ -47,4 +47,4 @@ module.exports = {
 
         return module ? require(path.join(module, name)) : null;
     }
-}
+};

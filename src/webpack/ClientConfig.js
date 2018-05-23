@@ -1,13 +1,20 @@
-"use strict"
+"use strict";
 let path = require("path");
 let webpack = require("webpack");
 let fs = require("fs");
-let _ = require('lodash');
+let _ = require("lodash");
 
 let utils = require("../utils/utils");
 let BaseConfig = require("./BaseConfig");
 
+/**
+ * 前端打包
+ */
 class ClientConfig extends BaseConfig {
+    /**
+     * 构造器
+     * @param {*} builder 
+     */
     constructor(builder) {
         super(builder.options);
         this.type = "client";
@@ -18,7 +25,10 @@ class ClientConfig extends BaseConfig {
         
         this.initialize(builder.options);
     }
-
+    /**
+     * 初始化webpack配置
+     * @param {*} config 
+     */
     initialize(config) {
         this.initBase(config);
 
@@ -35,13 +45,16 @@ class ClientConfig extends BaseConfig {
             this.setDevTool(config.build.devtool);
         }
 
-        this.builder.emit('client-config', this);
+        this.builder.emit("client-config", this);
     }
-
+    /**
+     * 获取devserver的配置
+     * @param {*} dev 
+     */
     createDevServer(dev) {
         return {
             compress: true,
-            clientLogLevel: 'warning',
+            clientLogLevel: "warning",
             historyApiFallback: true,
             hot: true,
             inline: true,

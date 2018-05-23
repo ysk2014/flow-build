@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 const path = require("path");
 const fs = require("fs");
@@ -9,18 +9,18 @@ exports.define = {
     enable: true,
     name: webpack.DefinePlugin,
     args() {
-        const NODE_ENV = process.env.NODE_ENV ? process.env.NODE_ENV : (this.prod ? 'production' : 'development');
+        const NODE_ENV = process.env.NODE_ENV ? process.env.NODE_ENV : (this.prod ? "production" : "development");
         return {
-            'process.env.NODE_ENV': JSON.stringify(NODE_ENV)
+            "process.env.NODE_ENV": JSON.stringify(NODE_ENV)
         };
     }
 };
 
 exports.npm = {
     enable: false,
-    name: 'npm-install-webpack3-plugin',
+    name: "npm-install-webpack3-plugin",
     args: {
-      dev: true
+        dev: true
     }
 };
 
@@ -32,48 +32,45 @@ exports.error = {
 
 exports.nameModule = {
     enable: true,
-    env: ['dev'],
-    type: 'client',
+    env: ["dev"],
+    type: "client",
     name: webpack.NamedModulesPlugin,
     args: {}
 };
 
 exports.hashModule = {
     enable: true,
-    env: ['test', 'prod'],
+    env: ["test", "prod"],
     name: webpack.HashedModuleIdsPlugin,
     args: {}
 };
 
 exports.hot = {
     enable: true,
-    type: 'client',
-    env: ['dev'],
+    type: "client",
+    env: ["dev"],
     name: webpack.HotModuleReplacementPlugin
 };
 
 exports.module = {
     enable: true,
-    env: ['test', 'prod'],
+    env: ["test", "prod"],
     name: webpack.optimize.ModuleConcatenationPlugin
 };
 
 exports.uglifyJs = {
     enable: true,
-    env: ['prod'],
-    name: webpack.optimize.UglifyJsPlugin,
+    env: ["prod"],
+    name: "uglifyjs-webpack-plugin",
     args: {
-        compress: {
-            warnings: false
-        },
         sourceMap: true,
         parallel: true
     }
 };
 
 exports.extract = {
-    name: 'extract-text-webpack-plugin',
-    env: ['test', 'prod'],
+    name: "extract-text-webpack-plugin",
+    env: ["test", "prod"],
     enable: true,
     args() {
         return { filename: this.config.cssName, allChunks: true };
@@ -81,9 +78,9 @@ exports.extract = {
 };
 
 exports.optimizeCSS = {
-    type: 'client',
-    name: 'optimize-css-assets-webpack-plugin',
-    env: ['test', 'prod'],
+    type: "client",
+    name: "optimize-css-assets-webpack-plugin",
+    env: ["test", "prod"],
     enable: true,
     args() {
         return { cssProcessorOptions: this.config.cssSourceMap
@@ -91,19 +88,19 @@ exports.optimizeCSS = {
             : { safe: true }
         };
     }
-}
+};
 
 exports.html = {
     enable: true,
-    type: 'client',
-    name: 'html-webpack-plugin',
+    type: "client",
+    name: "html-webpack-plugin",
     withimg: false,
     args() {
         let obj = { 
             filename: this.config.html.template.filename,
             template: path.resolve(this.baseDir, this.config.html.template.path),
             inject: true,
-            chunksSortMode: 'dependency'
+            chunksSortMode: "dependency"
         };
 
         if (this.env!="dev") {
@@ -120,7 +117,7 @@ exports.html = {
                     minifyCSS: true,
                     minifyURLs: true
                 }
-            })
+            });
         };
         return obj;
     }
@@ -128,32 +125,32 @@ exports.html = {
 
 exports.vendor = {
     enable: true,
-    type: 'client',
-    env: ['test', 'prod'],
+    type: "client",
+    env: ["test", "prod"],
     name: webpack.optimize.CommonsChunkPlugin,
     args: {
-        name: 'vendor',
+        name: "vendor",
         minChunks: function (module) {
             // any required modules inside node_modules are extracted to vendor
             return (
                 module.resource &&
                 /\.js$/.test(module.resource) &&
                 module.resource.indexOf(
-                    path.join(process.cwd(), './node_modules')
+                    path.join(process.cwd(), "./node_modules")
                 ) === 0
                 && !/\.(css|less|scss|sass|styl|stylus|vue)$/.test(module.request)
-            )
+            );
         }
     }
 };
 
 exports.manifest = {
     enable: true,
-    type: 'client',
+    type: "client",
+    env: ["test", "prod"],
     name: webpack.optimize.CommonsChunkPlugin,
-    env: ['test', 'prod'],
     args: {
-        name: 'manifest',
+        name: "manifest",
         minChunks: Infinity
     }
 };
@@ -161,54 +158,47 @@ exports.manifest = {
 
 exports.imagemini = {
     enable: false,
-    env: ['prod'],
-    type: 'client',
-    name: 'imagemin-webpack-plugin',
-    entry: 'default'
+    env: ["prod"],
+    type: "client",
+    name: "imagemin-webpack-plugin",
+    entry: "default"
 };
 
 exports.analyzer = {
     enable: false,
-    type: 'client',
-    name: 'webpack-bundle-analyzer',
-    entry: 'BundleAnalyzerPlugin',
+    type: "client",
+    name: "webpack-bundle-analyzer",
+    entry: "BundleAnalyzerPlugin",
     args() {
         return {
             analyzerPort: this.ssr ? 9998 : 9999,
-            statsFilename: this.type ? this.type + '_analyzer_stats.json' : 'analyzer_stats.json'
+            statsFilename: this.type ? this.type + "_analyzer_stats.json" : "analyzer_stats.json"
         };
     }
 };
 
-exports.copy = {
-    enable: false,
-    type: 'client',
-    name: 'copy-webpack-plugin',
-    args() {
-        return [this.config.white.patterns, this.config.white.rules];
-    }
-}
-
 exports.processbar = {
     enable: false,
-    env: ['test', 'prod'],
-    name: 'progress-bar-webpack-plugin',
+    env: ["test", "prod"],
+    name: "progress-bar-webpack-plugin",
     args() {
         let format, complete;
         if (this.type== "client") {
-            format = `${chalk.green.bold('*')} ${chalk.green('client')} :bar ${chalk.green.bold(':percent')} :msg`;
-            complete = chalk.green('█')
+            format = `${chalk.green.bold("*")} ${chalk.green("client")} :bar ${chalk.green.bold(":percent")} :msg`;
+            complete = chalk.green("█");
         }  else {
-            format = `${chalk.yellow.bold('*')} ${chalk.yellow('server')} :bar ${chalk.yellow.bold(':percent')} :msg`;
-            complete = chalk.yellow('█')
+            format = `${chalk.yellow.bold("*")} ${chalk.yellow("server")} :bar ${chalk.yellow.bold(":percent")} :msg`;
+            complete = chalk.yellow("█");
         }
         return {
             complete: complete,
-            incomplete: chalk.white('█'),
+            incomplete: chalk.white("█"),
             format: format,
             clear: true
-        }
+        };
     }
-}
+};
+
+
 
   

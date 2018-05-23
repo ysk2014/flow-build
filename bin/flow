@@ -1,44 +1,44 @@
 #!/usr/bin/env node
 
-'use strict';
+"use strict";
 
 const path = require("path");
 const checkRequiredFiles = require("../src/utils/checkRequiredFiles");
 
 let env;
 
-let argv = require('yargs')
+let argv = require("yargs")
     // .version(require('../package').version)
-    .usage('Usage: $0 <command> [options]')
-    .command('start', 'start the application in development mode', () => {
+    .usage("Usage: $0 <command> [options]")
+    .command("start", "start the application in development mode", () => {
         env = "start";
     })
-    .command('build', 'compiles the application for production deployment', ()=> {
+    .command("build", "compiles the application for production deployment", ()=> {
         env = "build";
     })
     .option("c", {
-        alias : 'config-file',
-        default: './flow.config.js',
-        describe: 'Path to flow.js config file (default: flow.config.js)',
-        type: 'string'
+        alias : "config-file",
+        default: "./flow.config.js",
+        describe: "Path to flow.js config file (default: flow.config.js)",
+        type: "string"
     })
     .help("help")
     .alias("help", "h")
     .version()
     .alias("version", "v")
-    .default('v', require('../package').version)
+    .default("v", require("../package").version)
     .argv;
 
 /**
  * 获取配置文件路径，默认为当前项目下的flow.config.js
  */
-var ConfigFilePath = path.join(process.cwd(), argv['config-file']);
+var ConfigFilePath = path.join(process.cwd(), argv["config-file"]);
 
 /**
  * 检测配置文件是否存在
  */
 if (!checkRequiredFiles([ConfigFilePath])) {
-    process.exit(1)
+    process.exit(1);
 }
 
 

@@ -1,6 +1,6 @@
 {
   "name": "flow-build",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "打包工具",
   "main": "src/index.js",
   "bin": {
@@ -48,6 +48,7 @@
     "postcss-import": "~11.0.0",
     "postcss-loader": "~2.0.10",
     "style-loader": "~0.20.2",
+    "uglifyjs-webpack-plugin": "^1.2.5",
     "url-loader": "~0.6.2",
     "webpack": "~3.10.0",
     "webpack-dev-middleware": "~2.0.4",

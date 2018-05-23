@@ -1,8 +1,9 @@
-"use strict"
-const EventEmitter = require('events');
+"use strict";
+const EventEmitter = require("events");
 const path = require("path");
 const chalk = require("chalk");
 const fs = require("fs-extra");
+const cpy = require("cpy");
 const checkRequiredFiles = require("./utils/checkRequiredFiles");
 const validateSchema = require("./schema/v");
 const openBrowser = require("./utils/openBrowser");
@@ -13,6 +14,10 @@ const Logger = require("./utils/logger");
 let logger = new Logger("flow");
 
 module.exports = class Builder extends EventEmitter {
+    /**
+     * 
+     * @param {*} options 
+     */
     constructor(options) {
         super();
         //对options进行格式化校验
@@ -30,10 +35,14 @@ module.exports = class Builder extends EventEmitter {
 
         this.checkFiles();
 
-        
+        this.copyFiles();
+
         this.initWebpack();
     }
 
+    /**
+     * 获取webpack配置
+     */
     initWebpack() {
 
         this.webpack = webpack;
@@ -58,14 +67,14 @@ module.exports = class Builder extends EventEmitter {
 
         let dealEntry = (entry)=> {
             if (typeof entry == "string") {
-                paths.push(path.resolve(process.cwd(), entry))
+                paths.push(path.resolve(process.cwd(), entry));
             } else if (!Array.isArray(entry)) {
                 Object.keys(entry).forEach(key => {
                     paths.push(path.resolve(process.cwd(), entry[key]));
                 });
             } else {
                 entry.forEach(key => {
-                    paths.push(path.resolve(process.cwd(), key))
+                    paths.push(path.resolve(process.cwd(), key));
                 });
             }
         };
@@ -100,7 +109,7 @@ module.exports = class Builder extends EventEmitter {
 
             //bugs: mode为ssr时，filename不能为index.html
             if (op.html.template.filename == "index.html") {
-                this.options.html.template.filename = "index.ssr.html"
+                this.options.html.template.filename = "index.ssr.html";
             }
         } else {
             paths.push(path.resolve(process.cwd(), op.html.template.path));
@@ -112,7 +121,31 @@ module.exports = class Builder extends EventEmitter {
             process.exit(1);
         }
     }
+    /**
+     * 白名单，复制不需要编译的文件到指定的地址
+     */
+    async copyFiles() {
+        let white = this.options.white;
 
+        if (white) {
+            try {
+                if (Array.isArray(white)) {
+                    await Promise.all(white.map((item) => {
+                        return cpy(item.from, item.to, item.options || {});
+                    }));
+                } else {
+                    await cpy(white.from, white.to, white.options || {});
+                }
+            } catch (error) {
+                logger.error("copy files error:");
+                logger.error(error);
+                process.exit(1);
+            }
+        }
+    }
+    /**
+     * 开始启动程序
+     */
     run() {
         
         if (this.env !== "dev") {
@@ -122,20 +155,25 @@ module.exports = class Builder extends EventEmitter {
 
         this.emit("run", this);
         
-        if (this.mode == "spa" || this.mode == "vue") {
+        if (this.mode == "spa" || this.mode == "vue" || this.mode == "mpvue") {
             let SpaCompontent = require("./Spa");
             new SpaCompontent(this);
-        } else {
-            this.build()
+        } else if (this.mode == "ssr") {
+            this.build();
         }
     }
-
+    /**
+     * 开始服务端打包
+     * @param {*} callback 
+     */
     build(callback) {
         let SSRCompontent = require("./SSR");
         let SSRBuilder = new SSRCompontent(this);
-        return SSRBuilder.build(callback)
+        return SSRBuilder.build(callback);
     }
-
+    /**
+     * 初始化hook插件
+     */
     initHook() {
         let hooks = Array.isArray(this.options.hooks) ? this.options.hooks : [this.options.hooks];
 
@@ -143,9 +181,13 @@ module.exports = class Builder extends EventEmitter {
             if (obj.apply) obj.apply(this);
         });
     }
-
+    /**
+     * 对外提供自动打开浏览器的功能
+     * @param {*} host 
+     * @param {*} port 
+     */
     openBrowser(host, port) {
         openBrowser(host, port);
     }
 
-}
+};

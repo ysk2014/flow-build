@@ -1,11 +1,11 @@
 /**
  * 检测文件是否存在
  */
-'use strict';
+"use strict";
 
-var fs = require('fs');
-var path = require('path');
-var chalk = require('chalk');
+var fs = require("fs");
+var path = require("path");
+var chalk = require("chalk");
 
 /**
  * @param {array} files 
@@ -21,9 +21,9 @@ function checkRequiredFiles(files) {
     } catch (err) {
         var dirName = path.dirname(currentFilePath);
         var fileName = path.basename(currentFilePath);
-        console.log(chalk.red('Could not find a required file.'));
-        console.log(chalk.red('  Name: ') + chalk.cyan(fileName));
-        console.log(chalk.red('  Searched in: ') + chalk.cyan(dirName));
+        console.log(chalk.red("Could not find a required file."));
+        console.log(chalk.red("  Name: ") + chalk.cyan(fileName));
+        console.log(chalk.red("  Searched in: ") + chalk.cyan(dirName));
         return false;
     }
 }

@@ -6,10 +6,10 @@ exports.ServerConfig = require("./ServerConfig");
 
 exports.getClientConfig = (flow)=> {
     return new exports.ClientConfig(flow);
-}
+};
 
 exports.getServerConfig = (flow)=> {
     return new exports.ServerConfig(flow);
-}
+};
 
 

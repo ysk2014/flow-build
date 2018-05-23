@@ -138,7 +138,8 @@
                 },
                 "assetsSubDirectory": {
                     "description": "打包后的静态文件子目录",
-                    "type": "string"
+                    "type": "string",
+                    "default": "static"
                 },
                 "publicPath": {
                     "description": "打包的静态资源cdn地址，默认为/",
@@ -233,12 +234,18 @@
                     "description": "输出css文件hash大小",
                     "type": "number",
                     "default": 16
+                },
+                "extension": {
+                    "description": "css文件的扩展名",
+                    "type": "array",
+                    "default": []
                 }
             },
             "default": {
                 "engine": "css",
                 "dirname": "css",
-                "hash": 16
+                "hash": 16,
+                "extension": []
             }
         },
         "image": {
@@ -363,19 +370,61 @@
         },
         "white": {
             "description": "白名单配置",
-            "type": "object",
-            "additionalProperties": false,
-            "properties": {
-                "patterns": {
-                    "description": "白名单",
-                    "type": "array"
+            "anyof": [
+                {
+                    "items": {
+                        "description": "A non-empty object",
+                        "type": "object",
+                        "properties": {
+                            "from": {
+                                "description": "要复制的文件",
+                                "anyof": [
+                                    {
+                                        "type": "string"
+                                    }, {
+                                        "type": "array"
+                                    }
+                                ]
+                            },
+                            "to": {
+                                "description": "目标目录",
+                                "type": "string"
+                            },
+                            "options": {
+                                "description": "复制参数",
+                                "type": "object"
+                            }
+                        }
+                    },
+                    "minItems": 1,
+                    "type": "array",
+                    "uniqueItems": true
                 },
-                "rules": {
-                    "description": "白名单规则",
+                {
+                    "description": "白名单配置",
                     "type": "object",
-                    "default": {}
+                    "properties": {
+                        "from": {
+                            "description": "要复制的文件",
+                            "anyof": [
+                                {
+                                    "type": "string"
+                                }, {
+                                    "type": "array"
+                                }
+                            ]
+                        },
+                        "to": {
+                            "description": "目标目录",
+                            "type": "string"
+                        },
+                        "options": {
+                            "description": "复制参数",
+                            "type": "object"
+                        }
+                    }
                 }
-            }
+            ]
         },
         "mode": {
             "description": "项目应用类型，vue/react/multiple/spa/ssr",

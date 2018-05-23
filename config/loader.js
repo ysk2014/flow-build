@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 exports.babel = {
     enable: true,
@@ -15,10 +15,10 @@ exports.eslint = {
     enable: false,
     test: /\.jsx?$/,
     use: [{
-        loader: 'eslint-loader'
+        loader: "eslint-loader"
     }],
     exclude: /node_modules/,
-    enforce: 'pre'
+    enforce: "pre"
 };
   
 exports.typescript = {
@@ -26,7 +26,7 @@ exports.typescript = {
     test: /\.ts$/,
     exclude: [/node_modules/],
     use: [{
-        loader: 'ts-loader'
+        loader: "ts-loader"
     }]
 };
   
@@ -34,9 +34,9 @@ exports.tslint = {
     enable: false,
     test: /\.ts$/,
     exclude: /node_modules/,
-    enforce: 'pre',
+    enforce: "pre",
     use: [{
-        loader: 'tslint-loader'
+        loader: "tslint-loader"
     }]
 };
 
@@ -44,7 +44,7 @@ exports.css = {
     enable: true,
     test: /\.css$/,
     use: [{
-        loader: 'css-loader',
+        loader: "css-loader",
         options: {
             sourceMap: false
         }
@@ -56,12 +56,12 @@ exports.sass = {
     enable: false,
     test: /\.sass/,
     use: [{
-        loader: 'css-loader',
+        loader: "css-loader",
         options: {
             sourceMap: false
         }
     }, {
-        loader: 'sass-loader',
+        loader: "sass-loader",
         options: {
             indentedSyntax: true,
             sourceMap: false
@@ -74,12 +74,12 @@ exports.less = {
     enable: false,
     test: /\.less/,
     use: [{
-        loader: 'css-loader',
+        loader: "css-loader",
         options: {
             sourceMap: false
         }
     }, {
-        loader: 'less-loader',
+        loader: "less-loader",
         options: {
             sourceMap: false
         }
@@ -91,12 +91,12 @@ exports.stylus = {
     enable: false,
     test: /\.stylus/,
     use: [{
-        loader: 'css-loader',
+        loader: "css-loader",
         options: {
             sourceMap: false
         }
     }, {
-        loader: 'stylus-loader',
+        loader: "stylus-loader",
         options: {
             sourceMap: false
         }
@@ -109,7 +109,7 @@ exports.urlimage = {
     test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
     use: [
         {
-            loader: 'url-loader',
+            loader: "url-loader",
             options: {
                 limit: 1024
             }
@@ -122,10 +122,10 @@ exports.urlfont = {
     test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
     use: [
         {
-            loader: 'url-loader',
+            loader: "url-loader",
             options: {
                 limit: 1024
             }
         }
     ]
-}
+};
