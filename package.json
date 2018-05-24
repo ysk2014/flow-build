@@ -1,6 +1,6 @@
 {
   "name": "flow-build",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "description": "打包工具",
   "main": "src/index.js",
   "bin": {
@@ -18,7 +18,9 @@
     "webpack-dev-server",
     "flow-build",
     "flow-vue-hook",
-    "flow-vue-ssr-hook"
+    "flow-vue-ssr-hook",
+    "flow-proxy-middleware",
+    "flow-vue-ssr-middleware"
   ],
   "author": {
     "name": "claus",

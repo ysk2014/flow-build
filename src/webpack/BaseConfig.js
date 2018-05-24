@@ -419,7 +419,11 @@ class BaseConfig {
                             sourceMap: this.config.cssSourceMap
                         }, useloaders[i].options);
                     } else {
-                        useloaders[i].options = Object.assign({}, useloaders[i].options);
+                        if (label == "babel") {
+                            useloaders[i].options = Object.assign({}, useloaders[i].options, this.config.loaderOptions[label]);
+                        } else {
+                            useloaders[i].options = Object.assign({}, useloaders[i].options);
+                        }
                     }
                 });
 

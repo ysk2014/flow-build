@@ -20,7 +20,12 @@ module.exports = {
         let loaderName = loader;
         if (_.isPlainObject(loader)) {
             if (loader.loader) {
-                loaderName = loader.loader;
+                if (path.isAbsolute(loader.loader)) {
+                    let res = loader.loader.match(/[a-zA-Z]+?-loader/g);
+                    loaderName = res[0];
+                } else {
+                    loaderName = loader.loader;
+                }
             } else if (Array.isArray(loader.use)) {
                 loaderName = loader.use[loader.use.length-1];
                 if (!_.isString(loaderName)) {

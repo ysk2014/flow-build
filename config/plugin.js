@@ -4,6 +4,9 @@ const path = require("path");
 const fs = require("fs");
 const webpack = require("webpack");
 const chalk = require("chalk");
+const os = require("os");
+const WORKERS = os.cpus().length - 1;
+const UGLIFYJS_WORKERS = WORKERS > 8 ? 8 : WORKERS;
 
 exports.define = {
     enable: true,
@@ -63,8 +66,20 @@ exports.uglifyJs = {
     env: ["prod"],
     name: "uglifyjs-webpack-plugin",
     args: {
+        cache: true,
+        parallel: UGLIFYJS_WORKERS,
         sourceMap: true,
-        parallel: true
+        uglifyOptions: {
+            warnings: false,
+            compress: {
+                dead_code: true,
+                drop_console: true,
+                drop_debugger: true
+            },
+            output: {
+                comments: false
+            }
+        }
     }
 };
 

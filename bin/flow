@@ -3,9 +3,9 @@
 "use strict";
 
 const path = require("path");
-const checkRequiredFiles = require("../src/utils/checkRequiredFiles");
+const { existsSync } = require("fs-extra");
 
-let env;
+let env, config;
 
 let argv = require("yargs")
     // .version(require('../package').version)
@@ -32,17 +32,17 @@ let argv = require("yargs")
 /**
  * 获取配置文件路径，默认为当前项目下的flow.config.js
  */
-var ConfigFilePath = path.join(process.cwd(), argv["config-file"]);
+let ConfigFilePath = path.join(process.cwd(), argv["config-file"]);
 
 /**
  * 检测配置文件是否存在
  */
-if (!checkRequiredFiles([ConfigFilePath])) {
-    process.exit(1);
+if (!existsSync(ConfigFilePath)) {
+    config = {};
+} else {
+    config = require(ConfigFilePath);
 }
 
-
-let config = require(ConfigFilePath);
 
 let Builder = require("../src/index");
 
