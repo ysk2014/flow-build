@@ -20,24 +20,31 @@ module.exports = class Builder extends EventEmitter {
      */
     constructor(options) {
         super();
-        //对options进行格式化校验
-        validateSchema(options);
 
-        this.options = Object.assign({}, options);
+        this.options = options;
 
         this.initHook();
+        //hook: entry-option
+        this.emit("entry-option", this);
+        
+        //对options进行格式化校验
+        validateSchema(this.options);
 
         this.mode = this.options.mode;
         this.env = this.options.env;
-
-        //hook: entry-option
-        this.emit("entry-option", this);
 
         this.checkFiles();
 
         this.copyFiles();
 
         this.initWebpack();
+    }
+
+    /**
+     * 
+     */
+    setOptions(val) {
+        this.options = Object.assign(this.options, val);
     }
 
     /**

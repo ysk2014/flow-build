@@ -51,5 +51,9 @@ module.exports = {
         });
 
         return module ? require(path.join(module, name)) : null;
+    },
+
+    assetsPath(prefix, _path) {
+        return path.posix.join(prefix, _path);
     }
 };

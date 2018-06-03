@@ -20,9 +20,6 @@ class ClientConfig extends BaseConfig {
         this.type = "client";
         this.builder = builder;
         this.webpackConfig.name = "client";
-
-        this.initEnv(builder.options);
-        
         this.initialize(builder.options);
     }
     /**
