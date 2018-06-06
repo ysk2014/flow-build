@@ -58,8 +58,8 @@ class Config {
             cssExtension: [...new Set(["css", "wxss", "less", "postcss", "sass", "scss", "stylus", "styl"].concat(config.css.extension))]
         };
 
-        this.initialize(config);
-        this.initEnv(config);
+        this._init(config);
+        this._initEnv(config);
     }
     /**
      * 文件路径前缀
@@ -71,7 +71,7 @@ class Config {
     /**
      * 初始化, 加载默认的webpackConfig
      */
-    initialize(config) {
+    _init(config) {
         this.webpackConfig = _.cloneDeep(require("../../config/webpack"));
         this.loaders = _.cloneDeep(require("../../config/loader"));
         this.plugins = _.cloneDeep(require("../../config/plugin"));
@@ -80,7 +80,7 @@ class Config {
      * 初始化环境
      * @param {*} config
      */
-    initEnv(config = {}) {
+    _initEnv(config = {}) {
         this.env = config.env || "dev"; // local/dev, test, prod
         this.dev = false;
         this.test = false;
@@ -100,7 +100,7 @@ class Config {
             this.config.cssSourceMap = (config.dev && config.dev.cssSourceMap) || false;
             this.config.extract =  false;
         }
-        this.webpackConfig.mode = this.prod ? "production" : "development";
+        // this.webpackConfig.mode = this.prod ? "production" : "development";
     }
     /**
      * 设置config
@@ -122,8 +122,14 @@ class Config {
      * @param {Object} output 
      */
     setOutput(output) {
-        if (!output) return;
         this.webpackConfig.output = output;
+    }
+    /**
+     * 设置webpack的output
+     * @param {Object} output 
+     */
+    mergeOutput(output) {
+        this.webpackConfig.output = _.merge(this.webpackConfig.output, output);
     }
 
     /**
@@ -181,7 +187,7 @@ class Config {
      * 设置webpack的output.libraryTarget
      * @param {*} libraryTarget 
      */
-    setLibraryTarget(libraryTarget) {
+    setLibraryTarget(libraryTarget = "var") {
         this.webpackConfig.output.libraryTarget = libraryTarget;
     }
 
@@ -189,11 +195,15 @@ class Config {
      * 设置webpack的resolve.extensions
      * @param {*} extensions 
      */
-    setExtensions(extensions) {
-        if (this.webpackConfig.resolve.extensions) {
+    setExtensions(extensions = []) {
+        if (!this.webpackConfig.resolve.extensions) {
+            this.webpackConfig.resolve.extensions = [];
+        }
+
+        if (Array.isArray(extensions)) {
             this.webpackConfig.resolve.extensions = _.union(this.webpackConfig.resolve.extensions, extensions);
         } else {
-            this.webpackConfig.resolve.extensions = extensions;
+            this.webpackConfig.resolve.extensions.push(extensions);
         }
     }
 
@@ -201,19 +211,19 @@ class Config {
      * 设置webpack的resolve.alias
      * @param {*} alias 
      */
-    setAlias(alias) {
-        if (this.webpackConfig.resolve.alias) {
-            this.webpackConfig.resolve.alias = _.merge(this.webpackConfig.resolve.alias, alias);
-        } else {
-            this.webpackConfig.resolve.alias = alias;
+    setAlias(alias = {}) {
+        if (!this.webpackConfig.resolve.alias) {
+            this.webpackConfig.resolve.alias = {};
         }
+        this.webpackConfig.resolve.alias = _.merge(this.webpackConfig.resolve.alias, alias);
     }
 
     /**
      * 设置webpack的externals
      * @param {*} externals 
      */
-    setExternals(externals) {
+    setExternals(externals = []) {
+        if (!externals) return;
         if (!this.webpackConfig.externals) {
             this.webpackConfig.externals = [];
         }
@@ -263,29 +273,37 @@ class Config {
      * 设置webpack的devtool
      * @param {*} devtool 
      */
-    setDevTool(devtool) {
+    setDevTool(devtool = "#source-map") {
         this.webpackConfig.devtool = devtool;
     }
     /**
      * 设置webpack的devserver
      * @param {*} devserver 
      */
-    setDevServer(devserver) {
+    setDevServer(devserver = {}) {
         this.webpackConfig.devServer = devserver;
     }
     /**
      * 设置webpack的target
      * @param {*} target 
      */
-    setTarget(target) {
+    setTarget(target = "web") {
         this.webpackConfig.target = target;
     }
     /**
      * 设置webpack的resolveLoader.modules
      * @param {*} modules 
      */
-    setResolveLoaderModules(modules) {
-        this.webpackConfig.resolveLoader.modules = _.union(this.webpackConfig.resolveLoader.modules, modules);
+    setResolveLoaderModules(modules = []) {
+        if (!this.webpackConfig.resolveLoader.modules) {
+            this.webpackConfig.resolveLoader.modules = [];
+        }
+
+        if (Array.isArray(modules)) {
+            this.webpackConfig.resolveLoader.modules = _.union(this.webpackConfig.resolveLoader.modules, modules);
+        } else {
+            this.webpackConfig.resolveLoader.modules.push(modules);
+        }
     }
 
     /**

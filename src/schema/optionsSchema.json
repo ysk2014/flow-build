@@ -429,7 +429,7 @@
         "mode": {
             "description": "项目应用类型，vue/react/multiple/spa/ssr",
             "type": "string",
-            "enum": ["vue", "react", "multiple","spa", "ssr"],
+            "enum": ["vue", "react", "multiple","spa", "ssr", "mpvue"],
             "default": "spa"
         },
         "env": {
