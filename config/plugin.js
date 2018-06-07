@@ -73,7 +73,7 @@ exports.uglifyJs = {
             warnings: false,
             compress: {
                 dead_code: true,
-                drop_console: true,
+                // drop_console: true,
                 drop_debugger: true
             },
             output: {
