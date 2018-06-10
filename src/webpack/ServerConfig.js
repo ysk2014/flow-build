@@ -21,7 +21,6 @@ class ServerConfig extends BaseConfig {
         this.target = "node";
         this.webpackConfig.name = "server";
 
-        this.initEnv(builder.options);
         this.initialize(builder.options);
     }
     /**
