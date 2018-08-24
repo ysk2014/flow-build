@@ -12,7 +12,11 @@ exports.define = {
     enable: true,
     name: webpack.DefinePlugin,
     args() {
-        const NODE_ENV = process.env.NODE_ENV ? process.env.NODE_ENV : (this.prod ? "production" : "development");
+        const NODE_ENV = process.env.NODE_ENV
+            ? process.env.NODE_ENV
+            : this.prod
+                ? "production"
+                : "development";
         return {
             "process.env.NODE_ENV": JSON.stringify(NODE_ENV)
         };
@@ -26,7 +30,6 @@ exports.npm = {
         dev: true
     }
 };
-
 
 exports.error = {
     enable: true,
@@ -98,9 +101,19 @@ exports.optimizeCSS = {
     env: ["test", "prod"],
     enable: true,
     args() {
-        return { cssProcessorOptions: this.config.cssSourceMap
-            ? { safe: true, map: { inline: false } }
-            : { safe: true }
+        return {
+            cssProcessor: require("cssnano"),
+            cssProcessorOptions: {
+                safe: true,
+                map: { inline: false },
+                discardComments: { removeAll: false }, // or removeAll: true
+                zindex: false,
+                normalizeUrl: false,
+                discardUnused: false,
+                mergeIdents: false,
+                reduceIdents: false,
+                autoprefixer: false
+            }
         };
     }
 };
@@ -111,14 +124,17 @@ exports.html = {
     name: "html-webpack-plugin",
     withimg: false,
     args() {
-        let obj = { 
+        let obj = {
             filename: this.config.html.template.filename,
-            template: path.resolve(this.baseDir, this.config.html.template.path),
+            template: path.resolve(
+                this.baseDir,
+                this.config.html.template.path
+            ),
             inject: true,
             chunksSortMode: "dependency"
         };
 
-        if (this.env!="dev") {
+        if (this.env != "dev") {
             obj = Object.assign({}, obj, {
                 minify: {
                     removeComments: true,
@@ -133,7 +149,7 @@ exports.html = {
                     minifyURLs: true
                 }
             });
-        };
+        }
         return obj;
     }
 };
@@ -145,15 +161,15 @@ exports.vendor = {
     name: webpack.optimize.CommonsChunkPlugin,
     args: {
         name: "vendor",
-        minChunks: function (module) {
+        minChunks: function(module) {
             // any required modules inside node_modules are extracted to vendor
             return (
                 module.resource &&
                 /\.js$/.test(module.resource) &&
                 module.resource.indexOf(
                     path.join(process.cwd(), "./node_modules")
-                ) === 0
-                && !/\.(css|less|scss|sass|styl|stylus|vue)$/.test(module.request)
+                ) === 0 &&
+                !/\.(css|less|scss|sass|styl|stylus|vue)$/.test(module.request)
             );
         }
     }
@@ -169,7 +185,6 @@ exports.manifest = {
         minChunks: Infinity
     }
 };
-
 
 exports.imagemini = {
     enable: false,
@@ -187,7 +202,9 @@ exports.analyzer = {
     args() {
         return {
             analyzerPort: this.ssr ? 9998 : 9999,
-            statsFilename: this.type ? this.type + "_analyzer_stats.json" : "analyzer_stats.json"
+            statsFilename: this.type
+                ? this.type + "_analyzer_stats.json"
+                : "analyzer_stats.json"
         };
     }
 };
@@ -198,11 +215,15 @@ exports.processbar = {
     name: "progress-bar-webpack-plugin",
     args() {
         let format, complete;
-        if (this.type== "client") {
-            format = `${chalk.green.bold("*")} ${chalk.green("client")} :bar ${chalk.green.bold(":percent")} :msg`;
+        if (this.type == "client") {
+            format = `${chalk.green.bold("*")} ${chalk.green(
+                "client"
+            )} :bar ${chalk.green.bold(":percent")} :msg`;
             complete = chalk.green("█");
-        }  else {
-            format = `${chalk.yellow.bold("*")} ${chalk.yellow("server")} :bar ${chalk.yellow.bold(":percent")} :msg`;
+        } else {
+            format = `${chalk.yellow.bold("*")} ${chalk.yellow(
+                "server"
+            )} :bar ${chalk.yellow.bold(":percent")} :msg`;
             complete = chalk.yellow("█");
         }
         return {
@@ -213,7 +234,3 @@ exports.processbar = {
         };
     }
 };
-
-
-
-  

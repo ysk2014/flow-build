@@ -135,7 +135,7 @@ class SSRBuilder {
                     });
                 })
         ).catch(e => {
-            process.exit();
+            process.exit(1);
         });
 
         return {

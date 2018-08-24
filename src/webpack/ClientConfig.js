@@ -1,10 +1,4 @@
 "use strict";
-let path = require("path");
-let webpack = require("webpack");
-let fs = require("fs");
-let _ = require("lodash");
-
-let utils = require("../utils/utils");
 let BaseConfig = require("./BaseConfig");
 
 /**
@@ -13,40 +7,39 @@ let BaseConfig = require("./BaseConfig");
 class ClientConfig extends BaseConfig {
     /**
      * 构造器
-     * @param {*} builder 
+     * @param {*} builder
      */
     constructor(builder) {
         super(builder.options);
         this.type = "client";
         this.builder = builder;
-        this.webpackConfig.name = "client";
+        this.set("name", "client");
         this.initialize(builder.options);
     }
     /**
      * 初始化webpack配置
-     * @param {*} config 
+     * @param {*} config
      */
     initialize(config) {
         this.initBase(config);
 
-        this.setEntry(config.entry);
+        this.set("entry", config.entry);
 
-        //hook: setDevTool
         if (this.env == "dev") {
-            this.setPublicpath(config.dev.publicPath);
-            this.setDevTool(config.dev.devtool);
-            this.setDevServer(this.createDevServer(config.dev));
+            this.set("output.publicPath", config.dev.publicPath);
+            this.set("devtool", config.dev.devtool);
+            this.set("devServer", this.createDevServer(config.dev));
         } else {
-            this.setPublicpath(config.build.publicPath);
+            this.set("output.publicPath", config.build.publicPath);
             this.setOutputChunkFileName(config.js.dirname, config.js.hash);
-            this.setDevTool(config.build.devtool);
+            this.set("devtool", config.build.devtool);
         }
 
         this.builder.emit("client-config", this);
     }
     /**
      * 获取devserver的配置
-     * @param {*} dev 
+     * @param {*} dev
      */
     createDevServer(dev) {
         return {
@@ -57,10 +50,9 @@ class ClientConfig extends BaseConfig {
             inline: true,
             host: dev.host,
             port: dev.port,
-            overlay: dev.errorOverlay ? {
-                warnings: false,
-                errors: true,
-            } : false,
+            overlay: dev.errorOverlay
+                ? { warnings: false, errors: true }
+                : false,
             publicPath: dev.publicPath,
             proxy: dev.proxy,
             quiet: true, // necessary for FriendlyErrorsPlugin

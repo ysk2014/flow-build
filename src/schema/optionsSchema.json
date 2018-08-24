@@ -48,7 +48,7 @@
             ]
         }
     },
-    "properties":{
+    "properties": {
         "entry": {
             "description": "The entry point(s) of the compilation.",
             "anyOf": [
@@ -216,7 +216,7 @@
                             "type": "array"
                         },
                         {
-                            "enum": ["css","less","sass","postcss","stylus"]
+                            "enum": ["css", "less", "sass", "postcss", "stylus"]
                         }
                     ],
                     "default": "css"
@@ -291,13 +291,11 @@
             "description": "font配置",
             "type": "object",
             "properties": {
-                
                 "dirname": {
                     "description": "输出font文件夹名称",
                     "type": "string",
                     "default": "fonts"
                 },
-                
                 "hash": {
                     "description": "输出font文件hash大小",
                     "type": "number",
@@ -381,7 +379,8 @@
                                 "anyof": [
                                     {
                                         "type": "string"
-                                    }, {
+                                    },
+                                    {
                                         "type": "array"
                                     }
                                 ]
@@ -409,7 +408,8 @@
                             "anyof": [
                                 {
                                     "type": "string"
-                                }, {
+                                },
+                                {
                                     "type": "array"
                                 }
                             ]
@@ -429,7 +429,7 @@
         "mode": {
             "description": "项目应用类型，vue/react/multiple/spa/ssr",
             "type": "string",
-            "enum": ["vue", "react", "multiple","spa", "ssr", "mpvue"],
+            "enum": ["vue", "react", "vue-prerender", "spa", "ssr", "mpvue"],
             "default": "spa"
         },
         "env": {
@@ -446,18 +446,37 @@
             "description": "webpack的extensions",
             "type": "array"
         },
-        "loaders": {
-            "description": "webpack的loader插件",
-            "type": "object"
+        "rules": {
+            "description": "webpack的rules规则",
+            "anyof": [
+                {
+                    "type": "object"
+                },
+                {
+                    "type": "array"
+                }
+            ]
         },
         "plugins": {
             "description": "webpack的plugins插件",
-            "type": "object"
+            "anyof": [
+                {
+                    "type": "object"
+                },
+                {
+                    "type": "array"
+                }
+            ]
         },
         "hooks": {
             "description": "flow打包插件",
             "type": "array",
             "default": []
+        },
+        "clean": {
+            "description": "是否清理掉上次打包的文件夹，默认为true",
+            "type": "boolean",
+            "default": true
         }
     }
 }

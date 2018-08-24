@@ -1,13 +1,10 @@
 "use strict";
 
-let path = require("path");
-let fs = require("fs");
 let _ = require("lodash");
 let assert = require("assert");
 let chalk = require("chalk");
 let ExtractTextPlugin = require("extract-text-webpack-plugin");
 let Config = require("./Config");
-let utils = require("../utils/utils");
 
 /**
  * webpack 基础配置项
@@ -15,7 +12,7 @@ let utils = require("../utils/utils");
 class BaseConfig extends Config {
     /**
      * 构造器
-     * @param {Object} config 
+     * @param {Object} config
      */
     constructor(config) {
         super(config);
@@ -23,10 +20,9 @@ class BaseConfig extends Config {
 
     /**
      * 初始化webpack基础配置
-     * @param {Object} config 
+     * @param {Object} config
      */
     initBase(config) {
-        
         this.setImageName(config.image.dirname, config.image.hash);
         this.setCssName(config.css.dirname, config.css.hash);
         this.setFontName(config.font.dirname, config.font.hash);
@@ -34,76 +30,89 @@ class BaseConfig extends Config {
         this.setOutputPath(config.build.outputPath);
         this.setOutputFileName(config.js.dirname, config.js.hash);
 
-        this.setAlias(config.alias);
-        this.setExtensions(config.extensions);
+        this.set("resolve.alias", config.alias || {});
+        this.update("resolve.extensions", old => {
+            return _.union(old, config.extensions || []);
+        });
 
         this.builder.emit("base-config", this);
 
-        //hook: mergeloaders
-        this.setLoaders(config.loaders);
+        //hook: mergeRules
+        this.setRules(config.rules);
 
         // hook: mergePlugin
         this.setPlugins(config.plugins);
     }
 
     /**
-     * 合并loader配置项
-     * @param {Object | Array} loaders 
-     * @param {Object} target 
+     * 合并rule配置项
+     * @param {Object | Array} rules
+     * @param {Object} target
      */
-    mergeLoader(loaders = {}, target) {
-        target = target || this.loaders;
+    mergeRule(rules = {}, target) {
+        target = target || this.rules;
 
-        const cloneLoaders = _.cloneDeep(loaders);
-        const sourceLoaders = Array.isArray(cloneLoaders) ? {} : cloneLoaders;
+        const cloneRules = _.cloneDeep(rules);
+        const sourceRules = Array.isArray(cloneRules) ? {} : cloneRules;
 
-        if (Array.isArray(cloneLoaders)) {
-            cloneLoaders.forEach(loader => {
-                if (this.utils.isWebpackLoader(loader)) {
-                    let label = this.utils.getLoaderLabel(loader);
-                    sourceLoaders[label] = Object.assign({}, loader, {enable: true});
-                } else if (_.isPlainObject(loader) && Object.keys(loader).length === 1) {
-                    let label = Object.keys(loader)[0];
-                    sourceLoaders[label] = loader[label];
+        if (Array.isArray(cloneRules)) {
+            cloneRules.forEach(rule => {
+                if (this.utils.isWebpackRule(rule)) {
+                    let label = this.utils.getLoaderLabel(rule);
+                    sourceRules[label] = Object.assign({}, rule, {
+                        enable: true
+                    });
+                } else if (
+                    _.isPlainObject(rule) &&
+                    Object.keys(rule).length === 1
+                ) {
+                    let label = Object.keys(rule)[0];
+                    sourceRules[label] = rule[label];
                 }
             });
         }
 
-        Object.keys(sourceLoaders).forEach(key => {
-            let sourceLoader = sourceLoaders[key];
-            
-            if (sourceLoader.loader) {
-                sourceLoader.use = [{loader: sourceLoader.loader, options: sourceLoader.options || {}}];
+        Object.keys(sourceRules).forEach(key => {
+            let sourceRule = sourceRules[key];
+
+            if (sourceRule.loader) {
+                sourceRule.use = [
+                    {
+                        loader: sourceRule.loader,
+                        options: sourceRule.options || {}
+                    }
+                ];
             }
 
-            const loader = target[key];
+            const rule = target[key];
 
-            if (loader) {
-                if (_.isPlainObject(sourceLoader)) {
-                    if (sourceLoader.enable === undefined) {
+            if (rule) {
+                if (_.isPlainObject(sourceRule)) {
+                    if (sourceRule.enable === undefined) {
                         target[key].enable = true;
                     }
 
-                    target[key] = Object.assign(target[key], sourceLoader);
+                    target[key] = Object.assign(target[key], sourceRule);
 
-                    if (sourceLoader.use) {
-                        target[key].use = sourceLoader.use;
+                    if (sourceRule.use) {
+                        target[key].use = sourceRule.use;
                     }
-
-                } else if (_.isBoolean(sourceLoader)) {
-                    target[key].enable = sourceLoader;
+                } else if (_.isBoolean(sourceRule)) {
+                    target[key].enable = sourceRule;
                 }
-            } else if (this.utils.isWebpackLoader(sourceLoader)) {
-                target[key] = sourceLoader;
+            } else if (this.utils.isWebpackRule(sourceRule)) {
+                target[key] = sourceRule;
             }
 
-            if (sourceLoader.options && target[key]) {
-                let index = target[key].use.length-1;
+            if (sourceRule.options && target[key]) {
+                let index = target[key].use.length - 1;
                 if (target[key].use[index]) {
-                    target[key].use[index].options = sourceLoader.options;
+                    target[key].use[index].options = sourceRule.options;
 
-                    let label = this.utils.getLoaderLabel(target[key].use[index]);
-                    this.config.loaderOptions[label] = sourceLoader.options;
+                    let label = this.utils.getLoaderLabel(
+                        target[key].use[index]
+                    );
+                    this.config.loaderOptions[label] = sourceRule.options;
                 }
             }
         });
@@ -112,33 +121,37 @@ class BaseConfig extends Config {
 
     /**
      * 设置webpack的loader
-     * @param {Object} loaders 
+     * @param {Object} rules
      */
-    setLoaders(loaders) {
-        this.builder.emit("merge-loader", this);
-        this.mergeLoader(loaders);
+    setRules(rules) {
+        this.builder.emit("merge-rule", this);
+        this.mergeRule(rules);
 
-        let target = _.cloneDeep(this.loaders);
-        let rules = [];
+        let target = _.cloneDeep(this.rules);
+        let result = [];
         let postcssLoader = this.createPostCssLoader();
         let cssExtension = this.config.cssExtension;
 
         Object.keys(target).forEach(name => {
-            let itemLoader = target[name];
+            let itemRule = target[name];
 
-            if (this.isUse(itemLoader)) {
-                let useloaders = itemLoader.use;
+            if (this.isUse(itemRule)) {
+                let useloaders = itemRule.use;
 
-                if (_.isFunction(itemLoader.use)) {
-                    itemLoader.use = itemLoader.use.apply(this);
+                if (_.isFunction(itemRule.use)) {
+                    itemRule.use = itemRule.use.apply(this);
                 }
 
-                if (this.config.imerge && cssExtension.includes(name) && this.config.extract) {
-                    useloaders.splice(1,0,{loader: "imerge-loader"});
+                if (
+                    this.config.imerge &&
+                    cssExtension.includes(name) &&
+                    this.config.extract
+                ) {
+                    useloaders.splice(1, 0, { loader: "imerge-loader" });
                 }
 
-                if (itemLoader.postcss) {
-                    useloaders.splice(1,0,postcssLoader);
+                if (itemRule.postcss) {
+                    useloaders.splice(1, 0, postcssLoader);
                 }
 
                 useloaders.forEach((k, i) => {
@@ -147,49 +160,65 @@ class BaseConfig extends Config {
                     }
 
                     let label = this.utils.getLoaderLabel(k);
-                    
+
                     if (cssExtension.includes(name)) {
-                        useloaders[i].options = Object.assign({
-                            sourceMap: this.config.cssSourceMap
-                        }, useloaders[i].options);
+                        useloaders[i].options = Object.assign(
+                            {
+                                sourceMap: this.config.cssSourceMap
+                            },
+                            useloaders[i].options
+                        );
                     } else {
                         if (label == "babel") {
-                            useloaders[i].options = Object.assign({}, useloaders[i].options, this.config.loaderOptions[label]);
+                            useloaders[i].options = Object.assign(
+                                {},
+                                useloaders[i].options,
+                                this.config.loaderOptions[label]
+                            );
                         } else {
-                            useloaders[i].options = Object.assign({}, useloaders[i].options);
+                            useloaders[i].options = Object.assign(
+                                {},
+                                useloaders[i].options
+                            );
                         }
                     }
                 });
 
                 if (cssExtension.includes(name)) {
-
                     const fallback = this.config.fallback;
 
                     if (this.config.extract) {
-                        itemLoader.use = ExtractTextPlugin.extract({
+                        itemRule.use = ExtractTextPlugin.extract({
                             use: useloaders,
                             fallback: fallback
                         });
                     } else {
-                        itemLoader.use = [fallback].concat(useloaders);
+                        itemRule.use = [fallback].concat(useloaders);
                     }
                 }
 
-                ["type", "enable", "postcss", "loader", "options"].forEach(propery => {
-                    delete itemLoader[propery];
-                });
-                rules.push(itemLoader);
+                ["type", "enable", "postcss", "loader", "options"].forEach(
+                    propery => {
+                        delete itemRule[propery];
+                    }
+                );
+                result.push(itemRule);
             }
         });
 
-        this.webpackConfig.module.rules = rules;
+        this.webpackConfig.module.rules = result;
     }
+
     /**
      * 创建postcss-loader
-     * @param {Object} loaderOptions 
+     * @param {Object} loaderOptions
      */
     createPostCssLoader(loaderOptions = {}) {
-        let options = Object.assign({}, this.config.loaderOptions.postcss, loaderOptions);
+        let options = Object.assign(
+            {},
+            this.config.loaderOptions.postcss,
+            loaderOptions
+        );
 
         return {
             loader: "postcss-loader",
@@ -199,8 +228,8 @@ class BaseConfig extends Config {
 
     /**
      * 合并plugin
-     * @param {Object | Array} plugins 
-     * @param {*} target 
+     * @param {Object | Array} plugins
+     * @param {*} target
      */
     mergePlugin(plugins = {}, target) {
         target = target || this.plugins;
@@ -216,7 +245,9 @@ class BaseConfig extends Config {
                     if (_.isString(plugin.name) && _.isString(plugin.label)) {
                         sourcePlugins[plugin.label] = plugin;
                     } else if (this.utils.isWebpackPlugin(plugin.name)) {
-                        sourcePlugins[plugin.label || plugin.name.constructor.name] = plugin;
+                        sourcePlugins[
+                            plugin.label || plugin.name.constructor.name
+                        ] = plugin;
                     } else if (_.isFunction(plugin.name) && plugin.name.name) {
                         sourcePlugins[plugin.name.name] = plugin;
                     }
@@ -237,14 +268,20 @@ class BaseConfig extends Config {
                     }
 
                     Object.keys(configPlugin).forEach(k => {
-                        if (target[name].hasOwnProperty(k)) target[name][k] = configPlugin[k];
+                        if (target[name].hasOwnProperty(k))
+                            target[name][k] = configPlugin[k];
                     });
                 } else if (_.isBoolean(configPlugin)) {
                     target[name].enable = configPlugin;
                 } else if (_.isFunction(configPlugin)) {
-                    target[name] = Object.assign({}, target[name], {args: configPlugin});
+                    target[name] = Object.assign({}, target[name], {
+                        args: configPlugin
+                    });
                 }
-            } else if (this.utils.isWebpackPlugin(configPlugin) || this.utils.isConfigPlugin(configPlugin)) {
+            } else if (
+                this.utils.isWebpackPlugin(configPlugin) ||
+                this.utils.isConfigPlugin(configPlugin)
+            ) {
                 target[name] = configPlugin;
             }
         });
@@ -253,7 +290,7 @@ class BaseConfig extends Config {
     }
     /**
      * 设置webpack的plugins
-     * @param {Object} plugins 
+     * @param {Object} plugins
      */
     setPlugins(plugins) {
         let self = this;
@@ -262,7 +299,9 @@ class BaseConfig extends Config {
 
         let target = _.cloneDeep(this.plugins);
         let webpackPlugins = [];
-        const modules = this.webpackConfig.resolveLoader && this.webpackConfig.resolveLoader.modules;
+        const modules =
+            this.webpackConfig.resolveLoader &&
+            this.webpackConfig.resolveLoader.modules;
 
         Object.keys(target).forEach(name => {
             let itemPlugin = target[name];
@@ -275,8 +314,12 @@ class BaseConfig extends Config {
                     pluginName = itemPlugin.constructor.name;
                 } else if (_.isPlainObject(itemPlugin.name)) {
                     plugin = itemPlugin.name;
-                    pluginName = itemPlugin.constructor && itemPlugin.constructor.name;
-                } else if (_.isString(itemPlugin.name) || _.isFunction(itemPlugin.name)) {
+                    pluginName =
+                        itemPlugin.constructor && itemPlugin.constructor.name;
+                } else if (
+                    _.isString(itemPlugin.name) ||
+                    _.isFunction(itemPlugin.name)
+                ) {
                     let Clazz = itemPlugin.name;
                     if (_.isString(itemPlugin.name)) {
                         pluginName = itemPlugin.name;
@@ -284,7 +327,12 @@ class BaseConfig extends Config {
                     } else if (_.isFunction(itemPlugin.name)) {
                         pluginName = itemPlugin.name.name;
                     }
-                    assert(Clazz, chalk.red(`dynamic create plugin[${name}] error, please check the npm module [${pluginName}] whether installed. if not installed, please execute the command [npm install ${pluginName} --save-dev] in command line`));
+                    assert(
+                        Clazz,
+                        chalk.red(
+                            `dynamic create plugin[${name}] error, please check the npm module [${pluginName}] whether installed. if not installed, please execute the command [npm install ${pluginName} --save-dev] in command line`
+                        )
+                    );
 
                     if (itemPlugin.entry) {
                         Clazz = Clazz[itemPlugin.entry];
@@ -297,7 +345,10 @@ class BaseConfig extends Config {
                         } else {
                             args = itemPlugin.args;
                         }
-                        plugin = new (Function.prototype.bind.apply(Clazz, [null].concat(args)));
+                        plugin = new (Function.prototype.bind.apply(
+                            Clazz,
+                            [null].concat(args)
+                        ))();
                     } else {
                         plugin = new Clazz();
                     }
@@ -312,13 +363,22 @@ class BaseConfig extends Config {
         });
 
         if (this.env != "dev" && this.config.imerge) {
-            let ImergePlugin = this.utils.requireModule("imerge-loader", modules).Plugin;
+            let ImergePlugin = this.utils.requireModule(
+                "imerge-loader",
+                modules
+            ).Plugin;
             if (_.isPlainObject(this.config.imerge)) {
                 webpackPlugins.push(new ImergePlugin(this.config.imerge));
             } else {
-                webpackPlugins.push(new ImergePlugin({
-                    spriteTo: self.prefix+"/"+self.flowConfig.image.dirname+"/imerge"
-                }));
+                webpackPlugins.push(
+                    new ImergePlugin({
+                        spriteTo:
+                            self.prefix +
+                            "/" +
+                            self.flowConfig.image.dirname +
+                            "/imerge"
+                    })
+                );
             }
         }
 

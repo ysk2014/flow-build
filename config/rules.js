@@ -12,95 +12,112 @@ exports.babel = {
 };
 
 exports.eslint = {
-    enable: false,
-    test: /\.jsx?$/,
-    use: [{
-        loader: "eslint-loader"
-    }],
+    enable: true,
+    test: /\.(jsx?|vue)$/,
+    use: [
+        {
+            loader: "eslint-loader"
+        }
+    ],
     exclude: /node_modules/,
     enforce: "pre"
 };
-  
+
 exports.typescript = {
     enable: false,
     test: /\.ts$/,
     exclude: [/node_modules/],
-    use: [{
-        loader: "ts-loader"
-    }]
+    use: [
+        {
+            loader: "ts-loader"
+        }
+    ]
 };
-  
+
 exports.tslint = {
     enable: false,
     test: /\.ts$/,
     exclude: /node_modules/,
     enforce: "pre",
-    use: [{
-        loader: "tslint-loader"
-    }]
+    use: [
+        {
+            loader: "tslint-loader"
+        }
+    ]
 };
 
 exports.css = {
     enable: true,
     test: /\.css$/,
-    use: [{
-        loader: "css-loader",
-        options: {
-            sourceMap: false
+    use: [
+        {
+            loader: "css-loader",
+            options: {
+                sourceMap: false
+            }
         }
-    }],
+    ],
     postcss: true
 };
 
 exports.sass = {
     enable: false,
     test: /\.sass/,
-    use: [{
-        loader: "css-loader",
-        options: {
-            sourceMap: false
+    use: [
+        {
+            loader: "css-loader",
+            options: {
+                sourceMap: false
+            }
+        },
+        {
+            loader: "sass-loader",
+            options: {
+                indentedSyntax: true,
+                sourceMap: false
+            }
         }
-    }, {
-        loader: "sass-loader",
-        options: {
-            indentedSyntax: true,
-            sourceMap: false
-        }
-    }],
+    ],
     postcss: true
 };
 
 exports.less = {
     enable: false,
     test: /\.less/,
-    use: [{
-        loader: "css-loader",
-        options: {
-            sourceMap: false
+    use: [
+        {
+            loader: "css-loader",
+            options: {
+                sourceMap: false
+            }
+        },
+        {
+            loader: "less-loader",
+            options: {
+                sourceMap: false
+            }
         }
-    }, {
-        loader: "less-loader",
-        options: {
-            sourceMap: false
-        }
-    }],
+    ],
     postcss: true
 };
 
 exports.stylus = {
     enable: false,
     test: /\.stylus/,
-    use: [{
-        loader: "css-loader",
-        options: {
-            sourceMap: false
+    use: [
+        {
+            loader: "css-loader",
+            options: {
+                sourceMap: false
+            }
+        },
+        {
+            loader: "stylus-loader",
+            options: {
+                sourceMap: false
+            }
         }
-    }, {
-        loader: "stylus-loader",
-        options: {
-            sourceMap: false
-        }
-    }],
+    ],
     postcss: true
 };
 

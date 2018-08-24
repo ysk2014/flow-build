@@ -10,7 +10,7 @@
     "test": "node ./test/cmd.js"
   },
   "repository": {
-    "type":"git",
+    "type": "git",
     "url": "git+https://github.com/ysk2014/flow-build.git"
   },
   "keywords": [
