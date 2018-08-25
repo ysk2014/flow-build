@@ -8,7 +8,7 @@ module.exports = {
         return _.isPlainObject(plugin) && plugin.constructor && plugin.constructor.prototype && plugin.constructor.prototype.apply;
     },
 
-    isWebpackLoader(loader) {
+    isWebpackRule(loader) {
         return _.isPlainObject(loader) && loader.test && (loader.loader || loader.use);
     },
 

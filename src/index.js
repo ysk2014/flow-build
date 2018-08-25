@@ -4,6 +4,7 @@ const path = require("path");
 const chalk = require("chalk");
 const fs = require("fs-extra");
 const cpy = require("cpy");
+let _ = require("lodash");
 const checkRequiredFiles = require("./utils/checkRequiredFiles");
 const validateSchema = require("./schema/v");
 const openBrowser = require("./utils/openBrowser");
