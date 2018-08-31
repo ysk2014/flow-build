@@ -41,7 +41,7 @@ module.exports = class Spa {
             this.webpackConfig.devServer
         );
         const compiler = this.createCompiler();
-        devServer = new webpackDevServer(
+        let devServer = new webpackDevServer(
             compiler,
             this.webpackConfig.devServer
         );
