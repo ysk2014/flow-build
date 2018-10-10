@@ -25,30 +25,10 @@ exports.define = {
 
 exports.npm = {
     enable: false,
-    name: "npm-install-webpack3-plugin",
+    name: "npm-install-webpack4-plugin",
     args: {
         dev: true
     }
-};
-
-exports.error = {
-    enable: true,
-    name: webpack.NoEmitOnErrorsPlugin
-};
-
-exports.nameModule = {
-    enable: true,
-    env: ["dev"],
-    type: "client",
-    name: webpack.NamedModulesPlugin,
-    args: {}
-};
-
-exports.hashModule = {
-    enable: true,
-    env: ["test", "prod"],
-    name: webpack.HashedModuleIdsPlugin,
-    args: {}
 };
 
 exports.hot = {
@@ -58,63 +38,12 @@ exports.hot = {
     name: webpack.HotModuleReplacementPlugin
 };
 
-exports.module = {
-    enable: true,
-    env: ["test", "prod"],
-    name: webpack.optimize.ModuleConcatenationPlugin
-};
-
-exports.uglifyJs = {
-    enable: true,
-    env: ["prod"],
-    name: "uglifyjs-webpack-plugin",
-    args: {
-        cache: true,
-        parallel: UGLIFYJS_WORKERS,
-        sourceMap: true,
-        uglifyOptions: {
-            warnings: false,
-            compress: {
-                dead_code: true,
-                // drop_console: true,
-                drop_debugger: true
-            },
-            output: {
-                comments: false
-            }
-        }
-    }
-};
-
 exports.extract = {
-    name: "extract-text-webpack-plugin",
+    name: "mini-css-extract-plugin",
     env: ["test", "prod"],
     enable: true,
     args() {
         return { filename: this.config.cssName, allChunks: true };
-    }
-};
-
-exports.optimizeCSS = {
-    type: "client",
-    name: "optimize-css-assets-webpack-plugin",
-    env: ["test", "prod"],
-    enable: true,
-    args() {
-        return {
-            cssProcessor: require("cssnano"),
-            cssProcessorOptions: {
-                safe: true,
-                map: { inline: false },
-                discardComments: { removeAll: false }, // or removeAll: true
-                zindex: false,
-                normalizeUrl: false,
-                discardUnused: false,
-                mergeIdents: false,
-                reduceIdents: false,
-                autoprefixer: false
-            }
-        };
     }
 };
 
@@ -151,38 +80,6 @@ exports.html = {
             });
         }
         return obj;
-    }
-};
-
-exports.vendor = {
-    enable: true,
-    type: "client",
-    env: ["test", "prod"],
-    name: webpack.optimize.CommonsChunkPlugin,
-    args: {
-        name: "vendor",
-        minChunks: function(module) {
-            // any required modules inside node_modules are extracted to vendor
-            return (
-                module.resource &&
-                /\.js$/.test(module.resource) &&
-                module.resource.indexOf(
-                    path.join(process.cwd(), "./node_modules")
-                ) === 0 &&
-                !/\.(css|less|scss|sass|styl|stylus|vue)$/.test(module.request)
-            );
-        }
-    }
-};
-
-exports.manifest = {
-    enable: true,
-    type: "client",
-    env: ["test", "prod"],
-    name: webpack.optimize.CommonsChunkPlugin,
-    args: {
-        name: "manifest",
-        minChunks: Infinity
     }
 };
 
