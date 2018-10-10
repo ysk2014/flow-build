@@ -3,7 +3,8 @@
 let _ = require("lodash");
 let assert = require("assert");
 let chalk = require("chalk");
-let ExtractTextPlugin = require("extract-text-webpack-plugin");
+let merge = require("webpack-merge");
+let MiniCssExtractPlugin = require("mini-css-extract-plugin");
 let Config = require("./Config");
 
 /**
@@ -185,16 +186,8 @@ class BaseConfig extends Config {
                 });
 
                 if (cssExtension.includes(name)) {
-                    const fallback = this.config.fallback;
-
-                    if (this.config.extract) {
-                        itemRule.use = ExtractTextPlugin.extract({
-                            use: useloaders,
-                            fallback: fallback
-                        });
-                    } else {
-                        itemRule.use = [fallback].concat(useloaders);
-                    }
+                    const fallback = this.config.extract ? MiniCssExtractPlugin.loader : this.config.fallback;
+                    itemRule.use = [fallback].concat(useloaders);
                 }
 
                 ["type", "enable", "postcss", "loader", "options"].forEach(
@@ -383,6 +376,15 @@ class BaseConfig extends Config {
         }
 
         this.webpackConfig.plugins = webpackPlugins;
+    }
+
+    /**
+     * 合并optimization
+     */
+    mergeOptimization(opt = {}) {
+        this.update("optimization", (old = {}) => {
+            return merge(old, opt);
+        });
     }
 }
 

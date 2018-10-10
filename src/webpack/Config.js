@@ -20,61 +20,7 @@ class Config {
         this.utils = utils;
         this.flowConfig = config;
 
-        this.config = {
-            mode: config.mode,
-            fallback: "style-loader",
-            imerge: config.image.imerge,
-            html: config.html,
-            loaderOptions: {
-                babel: config.js.babel
-                    ? config.js.babel
-                    : {
-                          presets: [
-                              [
-                                  "env",
-                                  {
-                                      modules: false
-                                  }
-                              ],
-                              "stage-2"
-                          ]
-                      },
-                postcss: config.css.postcss
-                    ? config.css.postcss
-                    : {
-                          ident: "postcss",
-                          sourceMap: false,
-                          plugins: () => [
-                              require("postcss-flexbugs-fixes"),
-                              require("autoprefixer")({
-                                  browsers: [
-                                      ">1%",
-                                      "last 4 versions",
-                                      "Firefox ESR",
-                                      "not ie < 9"
-                                  ],
-                                  flexbox: "no-2009"
-                              })
-                          ]
-                      }
-            },
-            cssExtension: [
-                ...new Set(
-                    [
-                        "css",
-                        "wxss",
-                        "less",
-                        "postcss",
-                        "sass",
-                        "scss",
-                        "stylus",
-                        "styl"
-                    ].concat(config.css.extension)
-                )
-            ]
-        };
-
-        this._init();
+        this._init(config);
         this._initEnv(config);
     }
     /**
@@ -87,10 +33,60 @@ class Config {
     /**
      * 初始化, 加载默认的webpackConfig
      */
-    _init() {
+    _init(config) {
+        this.config = {
+            mode: config.mode,
+            fallback: "style-loader",
+            imerge: config.image.imerge,
+            html: config.html,
+            cssExtension: [...new Set([
+                "css",
+                "wxss",
+                "less",
+                "postcss",
+                "sass",
+                "scss",
+                "stylus",
+                "styl"
+            ].concat(config.css.extension))],
+            loaderOptions: {
+                babel: {
+                    presets: [
+                        [
+                            "@babel/preset-env",
+                            {
+                                modules: false
+                            }
+                        ],
+                        "@babel/preset-stage-2"
+                    ]
+                },
+                postcss: {
+                    ident: "postcss",
+                    sourceMap: false,
+                    plugins: () => [
+                        require("postcss-flexbugs-fixes"),
+                        require("autoprefixer")({
+                            browsers: [
+                                ">1%",
+                                "last 4 versions",
+                                "Firefox ESR",
+                                "not ie < 9"
+                            ],
+                            flexbox: "no-2009"
+                        })
+                    ]
+                }
+            }
+        };
+
+        if (config.css.postcss) this.config.loaderOptions.postcss = config.css.postcss;
+        if (config.js.babel) this.config.loaderOptions.babel = config.css.babel;
+        
         this.webpackConfig = _.cloneDeep(require("../../config/webpack"));
         this.rules = _.cloneDeep(require("../../config/rules"));
         this.plugins = _.cloneDeep(require("../../config/plugins"));
+        this.optimization = _.cloneDeep(require("../../config/optimization"));
     }
     /**
      * 初始化环境
@@ -119,6 +115,8 @@ class Config {
                 (config.dev && config.dev.cssSourceMap) || false;
             this.config.extract = false;
         }
+
+        this.set("mode", this.dev ? "development" : "production");
     }
     /**
      * 设置config
