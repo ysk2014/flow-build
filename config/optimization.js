@@ -1,5 +1,5 @@
 "use strict";
-
+const path = require("path");
 const os = require("os");
 const WORKERS = os.cpus().length - 1;
 const UGLIFYJS_WORKERS = WORKERS > 8 ? 8 : WORKERS;
@@ -45,7 +45,7 @@ module.exports = {
         name: true,
         chunks: "all",
         automaticNameDelimiter: ".",
-        minChunks: 2,
+        minChunks: 1,
 
         cacheGroups: {
             vender: {

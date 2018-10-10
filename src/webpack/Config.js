@@ -57,8 +57,7 @@ class Config {
                             {
                                 modules: false
                             }
-                        ],
-                        "@babel/preset-stage-2"
+                        ]
                     ]
                 },
                 postcss: {

@@ -34,7 +34,6 @@
   "dependencies": {
     "@babel/core": "^7.1.0",
     "@babel/preset-env": "^7.1.0",
-    "@babel/preset-stage-2": "^7.0.0",
     "ajv": "^6.5.4",
     "autoprefixer": "^9.1.5",
     "babel-loader": "^8.0.4",
