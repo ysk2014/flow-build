@@ -82,12 +82,12 @@ module.exports = class Spa {
         }
 
         //在webpack中如果项目重新编译，会触发该事件
-        compiler.plugin("invalid", () => {
+        compiler.hooks.invalid.tap("Spa", () => {
             console.log("Compiling...");
         });
 
         //在webpack编译完成后，对webpack输出的日志进行格式输出
-        compiler.plugin("done", stats => {
+        compiler.hooks.done.tapAsync("Spa", (stats, callback) => {
             let messages = formatWebpackMessages(stats.toJson({}, true));
             const isSuccessful =
                 !messages.errors.length && !messages.warnings.length;
@@ -107,6 +107,7 @@ module.exports = class Spa {
             }
 
             this.flow.emit("done", messages);
+            return callback();
         });
 
         return compiler;

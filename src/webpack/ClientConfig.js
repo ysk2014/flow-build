@@ -33,7 +33,7 @@ class ClientConfig extends BaseConfig {
             this.set("output.publicPath", config.build.publicPath);
             this.setOutputChunkFileName(config.js.dirname, config.js.hash);
             this.set("devtool", config.build.devtool);
-            this.set("optimization", this.optimization);
+            this.setOptimization(this.optimization);
         }
 
         this.builder.emit("client-config", this);

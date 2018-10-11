@@ -34,6 +34,10 @@ class ServerConfig extends BaseConfig {
             this.set("output.publicPath", config.dev.publicPath);
         } else {
             this.set("output.publicPath", config.build.publicPath);
+            this.set("optimization", {
+                splitChunks: false,
+                minimizer: []
+            });
         }
 
         this.builder.emit("server-config", this);

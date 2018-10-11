@@ -143,14 +143,6 @@ class BaseConfig extends Config {
                     itemRule.use = itemRule.use.apply(this);
                 }
 
-                if (
-                    this.config.imerge &&
-                    cssExtension.includes(name) &&
-                    this.config.extract
-                ) {
-                    useloaders.splice(1, 0, { loader: "imerge-loader" });
-                }
-
                 if (itemRule.postcss) {
                     useloaders.splice(1, 0, postcssLoader);
                 }
@@ -355,26 +347,6 @@ class BaseConfig extends Config {
             }
         });
 
-        if (this.env != "dev" && this.config.imerge) {
-            let ImergePlugin = this.utils.requireModule(
-                "imerge-loader",
-                modules
-            ).Plugin;
-            if (_.isPlainObject(this.config.imerge)) {
-                webpackPlugins.push(new ImergePlugin(this.config.imerge));
-            } else {
-                webpackPlugins.push(
-                    new ImergePlugin({
-                        spriteTo:
-                            self.prefix +
-                            "/" +
-                            self.flowConfig.image.dirname +
-                            "/imerge"
-                    })
-                );
-            }
-        }
-
         this.webpackConfig.plugins = webpackPlugins;
     }
 
@@ -385,6 +357,15 @@ class BaseConfig extends Config {
         this.update("optimization", (old = {}) => {
             return merge(old, opt);
         });
+    }
+
+    /**
+     * 设置optimization
+     * @param {*} opt 
+     */
+    setOptimization(opt = {}) {
+        this.set("optimization", opt);
+        this.builder.emit("merge-optimization", this);
     }
 }
 
