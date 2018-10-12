@@ -51,14 +51,10 @@ class Config {
             ].concat(config.css.extension))],
             loaderOptions: {
                 babel: {
-                    presets: [
-                        [
-                            "@babel/preset-env",
-                            {
-                                modules: false
-                            }
-                        ]
-                    ]
+                    babelrc: false,
+                    configFile: false,
+                    presets: [require.resolve("@vue/babel-preset-app")],
+                    plugins: ["@babel/plugin-transform-runtime"]
                 },
                 postcss: {
                     ident: "postcss",
