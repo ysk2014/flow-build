@@ -16,6 +16,8 @@ class ServerConfig extends BaseConfig {
         this.target = "node";
         this.set("name", "server");
 
+        this.config.extract = false;
+
         this.initialize(builder.options);
     }
     /**

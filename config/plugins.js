@@ -21,6 +21,7 @@ exports.define = {
 
 exports.npm = {
     enable: false,
+    env: ["dev"],
     name: "npm-install-webpack4-plugin",
     args: {
         dev: true
@@ -36,6 +37,7 @@ exports.hot = {
 
 exports.extract = {
     name: "mini-css-extract-plugin",
+    type: "client",
     env: ["test", "prod"],
     enable: true,
     args() {
@@ -90,6 +92,7 @@ exports.imagemini = {
 exports.analyzer = {
     enable: false,
     type: "client",
+    env: ["test", "prod"],
     name: "webpack-bundle-analyzer",
     entry: "BundleAnalyzerPlugin",
     args() {
