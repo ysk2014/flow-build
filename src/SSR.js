@@ -1,8 +1,6 @@
 "use strict";
 
-const path = require("path");
 const MFS = require("memory-fs");
-const { remove } = require("fs-extra");
 const webpack = require("webpack");
 const webpackDevMiddleware = require("webpack-dev-middleware");
 const webpackHotMiddleware = require("webpack-hot-middleware");
@@ -67,7 +65,7 @@ class SSRBuilder {
             this.compilers,
             compiler =>
                 new Promise(async (resolve, reject) => {
-                    compiler.plugin("done", async stats => {
+                    compiler.hooks.done.tapAsync("SSRBuilder", (stats, cb) => {
                         let messages = formatWebpackMessages(
                             stats.toJson({}, true)
                         );
@@ -78,9 +76,10 @@ class SSRBuilder {
                         if (messages.errors.length) {
                             logger.error("Failed to compile.\n");
                             console.log(messages.errors.join("\n\n"));
-                            return reject(
+                            reject(
                                 new Error("Webpack build exited with errors")
                             );
+                            return cb();
                         }
 
                         if (messages.warnings.length) {
@@ -102,6 +101,7 @@ class SSRBuilder {
                             }
                             process.nextTick(resolve);
                         }
+                        return cb();
                     });
 
                     if (this.env == "dev") {

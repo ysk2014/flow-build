@@ -16,6 +16,8 @@ class ServerConfig extends BaseConfig {
         this.target = "node";
         this.set("name", "server");
 
+        this.config.extract = false;
+
         this.initialize(builder.options);
     }
     /**
@@ -34,6 +36,10 @@ class ServerConfig extends BaseConfig {
             this.set("output.publicPath", config.dev.publicPath);
         } else {
             this.set("output.publicPath", config.build.publicPath);
+            this.set("optimization", {
+                splitChunks: false,
+                minimizer: []
+            });
         }
 
         this.builder.emit("server-config", this);

@@ -3,7 +3,8 @@
 let _ = require("lodash");
 let assert = require("assert");
 let chalk = require("chalk");
-let ExtractTextPlugin = require("extract-text-webpack-plugin");
+let merge = require("webpack-merge");
+let MiniCssExtractPlugin = require("mini-css-extract-plugin");
 let Config = require("./Config");
 
 /**
@@ -142,14 +143,6 @@ class BaseConfig extends Config {
                     itemRule.use = itemRule.use.apply(this);
                 }
 
-                if (
-                    this.config.imerge &&
-                    cssExtension.includes(name) &&
-                    this.config.extract
-                ) {
-                    useloaders.splice(1, 0, { loader: "imerge-loader" });
-                }
-
                 if (itemRule.postcss) {
                     useloaders.splice(1, 0, postcssLoader);
                 }
@@ -185,16 +178,8 @@ class BaseConfig extends Config {
                 });
 
                 if (cssExtension.includes(name)) {
-                    const fallback = this.config.fallback;
-
-                    if (this.config.extract) {
-                        itemRule.use = ExtractTextPlugin.extract({
-                            use: useloaders,
-                            fallback: fallback
-                        });
-                    } else {
-                        itemRule.use = [fallback].concat(useloaders);
-                    }
+                    const fallback = this.config.extract ? MiniCssExtractPlugin.loader : this.config.fallback;
+                    itemRule.use = [fallback].concat(useloaders);
                 }
 
                 ["type", "enable", "postcss", "loader", "options"].forEach(
@@ -362,27 +347,25 @@ class BaseConfig extends Config {
             }
         });
 
-        if (this.env != "dev" && this.config.imerge) {
-            let ImergePlugin = this.utils.requireModule(
-                "imerge-loader",
-                modules
-            ).Plugin;
-            if (_.isPlainObject(this.config.imerge)) {
-                webpackPlugins.push(new ImergePlugin(this.config.imerge));
-            } else {
-                webpackPlugins.push(
-                    new ImergePlugin({
-                        spriteTo:
-                            self.prefix +
-                            "/" +
-                            self.flowConfig.image.dirname +
-                            "/imerge"
-                    })
-                );
-            }
-        }
-
         this.webpackConfig.plugins = webpackPlugins;
+    }
+
+    /**
+     * 合并optimization
+     */
+    mergeOptimization(opt = {}) {
+        this.update("optimization", (old = {}) => {
+            return merge(old, opt);
+        });
+    }
+
+    /**
+     * 设置optimization
+     * @param {*} opt 
+     */
+    setOptimization(opt = {}) {
+        this.set("optimization", opt);
+        this.builder.emit("merge-optimization", this);
     }
 }
 
