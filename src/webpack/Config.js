@@ -53,7 +53,7 @@ class Config {
                 babel: {
                     babelrc: false,
                     configFile: false,
-                    presets: [require.resolve("@vue/babel-preset-app")],
+                    presets: [require.resolve("@nuxtjs/babel-preset-app")],
                     plugins: ["@babel/plugin-transform-runtime"]
                 },
                 postcss: {
