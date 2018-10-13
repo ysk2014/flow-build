@@ -38,6 +38,7 @@
     "autoprefixer": "^9.1.5",
     "babel-loader": "^8.0.4",
     "chalk": "^2.4.1",
+    "core-js": "^2.5.7",
     "cpy": "^7.0.1",
     "css-loader": "^1.0.0",
     "file-loader": "^2.0.0",

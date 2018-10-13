@@ -20,7 +20,7 @@ exports.define = {
 };
 
 exports.npm = {
-    enable: false,
+    enable: true,
     env: ["dev"],
     name: "npm-install-webpack4-plugin",
     args: {
