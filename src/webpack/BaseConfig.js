@@ -193,6 +193,16 @@ class BaseConfig extends Config {
                         },
                         fallback
                     ].concat(useloaders);
+                } else {
+                    itemRule.use = [{
+                        loader: "cache-loader",
+                        options: {
+                            cacheDirectory: path.resolve(
+                                process.cwd(),
+                                "node_modules/.cache/cache-loader"
+                            )
+                        }
+                    }].concat(useloaders);
                 }
 
                 ["type", "enable", "postcss", "loader", "options"].forEach(
