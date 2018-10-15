@@ -178,8 +178,21 @@ class BaseConfig extends Config {
                 });
 
                 if (cssExtension.includes(name)) {
-                    const fallback = this.config.extract ? MiniCssExtractPlugin.loader : this.config.fallback;
-                    itemRule.use = [fallback].concat(useloaders);
+                    const fallback = this.config.extract
+                        ? MiniCssExtractPlugin.loader
+                        : this.config.fallback;
+                    itemRule.use = [
+                        {
+                            loader: "cache-loader",
+                            options: {
+                                cacheDirectory: path.resolve(
+                                    process.cwd(),
+                                    "node_modules/.cache/cache-loader"
+                                )
+                            }
+                        },
+                        fallback
+                    ].concat(useloaders);
                 }
 
                 ["type", "enable", "postcss", "loader", "options"].forEach(
@@ -361,7 +374,7 @@ class BaseConfig extends Config {
 
     /**
      * 设置optimization
-     * @param {*} opt 
+     * @param {*} opt
      */
     setOptimization(opt = {}) {
         this.set("optimization", opt);
