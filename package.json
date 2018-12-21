@@ -48,7 +48,7 @@
         "lodash": "^4.17.11",
         "memory-fs": "^0.4.1",
         "mini-css-extract-plugin": "^0.4.3",
-        "npm-install-webpack4-plugin": "^1.0.3",
+        "npm-install-webpack4-plugin": "^1.0.4",
         "optimize-css-assets-webpack-plugin": "^5.0.1",
         "portfinder": "^1.0.17",
         "postcss-flexbugs-fixes": "^4.1.0",
