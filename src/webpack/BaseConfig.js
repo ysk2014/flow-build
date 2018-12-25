@@ -1,5 +1,5 @@
 "use strict";
-
+let path = require("path");
 let _ = require("lodash");
 let assert = require("assert");
 let chalk = require("chalk");
