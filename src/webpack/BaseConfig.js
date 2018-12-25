@@ -63,10 +63,7 @@ class BaseConfig extends Config {
                     sourceRules[label] = Object.assign({}, rule, {
                         enable: true
                     });
-                } else if (
-                    _.isPlainObject(rule) &&
-                    Object.keys(rule).length === 1
-                ) {
+                } else if (_.isPlainObject(rule) && Object.keys(rule).length === 1) {
                     let label = Object.keys(rule)[0];
                     sourceRules[label] = rule[label];
                 }
@@ -110,9 +107,7 @@ class BaseConfig extends Config {
                 if (target[key].use[index]) {
                     target[key].use[index].options = sourceRule.options;
 
-                    let label = this.utils.getLoaderLabel(
-                        target[key].use[index]
-                    );
+                    let label = this.utils.getLoaderLabel(target[key].use[index]);
                     this.config.loaderOptions[label] = sourceRule.options;
                 }
             }
@@ -169,10 +164,7 @@ class BaseConfig extends Config {
                                 this.config.loaderOptions[label]
                             );
                         } else {
-                            useloaders[i].options = Object.assign(
-                                {},
-                                useloaders[i].options
-                            );
+                            useloaders[i].options = Object.assign({}, useloaders[i].options);
                         }
                     }
                 });
@@ -181,35 +173,14 @@ class BaseConfig extends Config {
                     const fallback = this.config.extract
                         ? MiniCssExtractPlugin.loader
                         : this.config.fallback;
-                    itemRule.use = [
-                        {
-                            loader: "cache-loader",
-                            options: {
-                                cacheDirectory: path.resolve(
-                                    process.cwd(),
-                                    "node_modules/.cache/cache-loader"
-                                )
-                            }
-                        },
-                        fallback
-                    ].concat(useloaders);
+                    itemRule.use = [fallback].concat(useloaders);
                 } else {
-                    itemRule.use = [{
-                        loader: "cache-loader",
-                        options: {
-                            cacheDirectory: path.resolve(
-                                process.cwd(),
-                                "node_modules/.cache/cache-loader"
-                            )
-                        }
-                    }].concat(useloaders);
+                    itemRule.use = useloaders;
                 }
 
-                ["type", "enable", "postcss", "loader", "options"].forEach(
-                    propery => {
-                        delete itemRule[propery];
-                    }
-                );
+                ["type", "enable", "postcss", "loader", "options"].forEach(propery => {
+                    delete itemRule[propery];
+                });
                 result.push(itemRule);
             }
         });
@@ -222,11 +193,7 @@ class BaseConfig extends Config {
      * @param {Object} loaderOptions
      */
     createPostCssLoader(loaderOptions = {}) {
-        let options = Object.assign(
-            {},
-            this.config.loaderOptions.postcss,
-            loaderOptions
-        );
+        let options = Object.assign({}, this.config.loaderOptions.postcss, loaderOptions);
 
         return {
             loader: "postcss-loader",
@@ -253,9 +220,7 @@ class BaseConfig extends Config {
                     if (_.isString(plugin.name) && _.isString(plugin.label)) {
                         sourcePlugins[plugin.label] = plugin;
                     } else if (this.utils.isWebpackPlugin(plugin.name)) {
-                        sourcePlugins[
-                            plugin.label || plugin.name.constructor.name
-                        ] = plugin;
+                        sourcePlugins[plugin.label || plugin.name.constructor.name] = plugin;
                     } else if (_.isFunction(plugin.name) && plugin.name.name) {
                         sourcePlugins[plugin.name.name] = plugin;
                     }
@@ -276,8 +241,7 @@ class BaseConfig extends Config {
                     }
 
                     Object.keys(configPlugin).forEach(k => {
-                        if (target[name].hasOwnProperty(k))
-                            target[name][k] = configPlugin[k];
+                        if (target[name].hasOwnProperty(k)) target[name][k] = configPlugin[k];
                     });
                 } else if (_.isBoolean(configPlugin)) {
                     target[name].enable = configPlugin;
@@ -308,8 +272,7 @@ class BaseConfig extends Config {
         let target = _.cloneDeep(this.plugins);
         let webpackPlugins = [];
         const modules =
-            this.webpackConfig.resolveLoader &&
-            this.webpackConfig.resolveLoader.modules;
+            this.webpackConfig.resolveLoader && this.webpackConfig.resolveLoader.modules;
 
         Object.keys(target).forEach(name => {
             let itemPlugin = target[name];
@@ -322,12 +285,8 @@ class BaseConfig extends Config {
                     pluginName = itemPlugin.constructor.name;
                 } else if (_.isPlainObject(itemPlugin.name)) {
                     plugin = itemPlugin.name;
-                    pluginName =
-                        itemPlugin.constructor && itemPlugin.constructor.name;
-                } else if (
-                    _.isString(itemPlugin.name) ||
-                    _.isFunction(itemPlugin.name)
-                ) {
+                    pluginName = itemPlugin.constructor && itemPlugin.constructor.name;
+                } else if (_.isString(itemPlugin.name) || _.isFunction(itemPlugin.name)) {
                     let Clazz = itemPlugin.name;
                     if (_.isString(itemPlugin.name)) {
                         pluginName = itemPlugin.name;
@@ -353,10 +312,7 @@ class BaseConfig extends Config {
                         } else {
                             args = itemPlugin.args;
                         }
-                        plugin = new (Function.prototype.bind.apply(
-                            Clazz,
-                            [null].concat(args)
-                        ))();
+                        plugin = new (Function.prototype.bind.apply(Clazz, [null].concat(args)))();
                     } else {
                         plugin = new Clazz();
                     }

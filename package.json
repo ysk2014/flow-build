@@ -1,6 +1,6 @@
 {
     "name": "flow-build",
-    "version": "1.0.3",
+    "version": "1.0.4",
     "description": "打包工具",
     "main": "src/index.js",
     "bin": {
@@ -37,7 +37,6 @@
         "ajv": "^6.5.4",
         "autoprefixer": "^9.1.5",
         "babel-loader": "^8.0.4",
-        "cache-loader": "^1.2.2",
         "chalk": "^2.4.1",
         "core-js": "^2.5.7",
         "cpy": "^7.0.1",
