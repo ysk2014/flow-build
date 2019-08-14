@@ -32,13 +32,12 @@
         "npm": ">=5.0.0"
     },
     "dependencies": {
-        "@babel/core": "7.1.0",
-        "@nuxtjs/babel-preset-app": "0.7.0",
+        "@babel/core": "7.5.5",
+        "@vue/babel-preset-app": "3.10.0",
         "ajv": "6.5.4",
         "autoprefixer": "9.1.5",
         "babel-loader": "8.0.4",
         "chalk": "2.4.1",
-        "core-js": "2.5.7",
         "cpy": "7.0.1",
         "css-loader": "1.0.0",
         "file-loader": "2.0.0",
